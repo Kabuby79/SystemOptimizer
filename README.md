@@ -20,6 +20,18 @@
 
 ---
 
+## 📸 Anteprima & Screenshot
+
+<p align="center">
+  <img src="screenshots/screenshot_1_interfaccia_chiara.png" alt="Interfaccia Semplice e Chiara" width="850">
+</p>
+
+<p align="center">
+  <img src="screenshots/screenshot_2_monitoraggio_live.png" alt="Monitoraggio in Tempo Reale e Sicurezza" width="850">
+</p>
+
+---
+
 ## 🌟 Caratteristiche Principali
 
 ### ⚡ Profili di Manutenzione Rapidi
