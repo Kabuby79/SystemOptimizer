@@ -1100,9 +1100,41 @@ namespace UniversalOptimizer
             Grid.SetRow(ugHwCards, 1);
             grdHw.Children.Add(ugHwCards);
 
-            txtOsFooterTag = new TextBlock() { Text = "Sistema: " + sysInfo.OS + "  |  Versione: " + (sysInfo.OSType == "win11" ? "Windows 11 (Rilevato)" : "Windows 10 (Rilevato)"), FontSize = 11, Foreground = brushTextMuted, Margin = new Thickness(4, 2, 0, 0) };
-            Grid.SetRow(txtOsFooterTag, 2);
-            grdHw.Children.Add(txtOsFooterTag);
+            DockPanel dpHwFooter = new DockPanel();
+            
+            txtOsFooterTag = new TextBlock() { Text = "Sistema: " + sysInfo.OS + "  |  Versione: " + (sysInfo.OSType == "win11" ? "Windows 11 (Rilevato)" : "Windows 10 (Rilevato)"), FontSize = 11, Foreground = brushTextMuted, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 2, 0, 0) };
+            DockPanel.SetDock(txtOsFooterTag, Dock.Left);
+
+            TextBlock txtDonateLink = new TextBlock() {
+                Text = "☕ Fai un'offerta libera",
+                FontSize = 11,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = brushTextWhite,
+                Cursor = Cursors.Hand,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Margin = new Thickness(0, 2, 6, 0)
+            };
+            txtDonateLink.ToolTip = "Supporta lo sviluppo su Ko-fi con una donazione libera";
+            txtDonateLink.MouseEnter += (s, e) => {
+                txtDonateLink.Foreground = brushAmber;
+                txtDonateLink.TextDecorations = TextDecorations.Underline;
+            };
+            txtDonateLink.MouseLeave += (s, e) => {
+                txtDonateLink.Foreground = brushTextWhite;
+                txtDonateLink.TextDecorations = null;
+            };
+            txtDonateLink.MouseLeftButtonUp += (s, e) => {
+                try {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("https://ko-fi.com/kabuby") { UseShellExecute = true });
+                } catch { }
+            };
+            DockPanel.SetDock(txtDonateLink, Dock.Right);
+
+            dpHwFooter.Children.Add(txtDonateLink);
+            dpHwFooter.Children.Add(txtOsFooterTag);
+            Grid.SetRow(dpHwFooter, 2);
+            grdHw.Children.Add(dpHwFooter);
 
             bdrHw.Child = grdHw;
             Grid.SetRow(bdrHw, 1);
@@ -3929,7 +3961,7 @@ namespace UniversalOptimizer
             ScrollViewer sv = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Margin = new Thickness(0, 0, 0, 15) };
             StackPanel spContent = new StackPanel();
 
-            Action<string, string> addSection = (iconTitle, text) =>
+            Action<string, string, FrameworkElement> addSection = (iconTitle, text, extraElement) =>
             {
                 Border bdrCard = new Border
                 {
@@ -3945,21 +3977,43 @@ namespace UniversalOptimizer
                 TextBlock lblSecBody = new TextBlock { Text = text, FontSize = 11.5, Foreground = new SolidColorBrush(Color.FromRgb(203, 213, 225)), TextWrapping = TextWrapping.Wrap, LineHeight = 18 };
                 sp.Children.Add(lblSecTitle);
                 sp.Children.Add(lblSecBody);
+                if (extraElement != null) sp.Children.Add(extraElement);
                 bdrCard.Child = sp;
                 spContent.Children.Add(bdrCard);
             };
 
             addSection("🛡️ Esclusione di Responsabilità (Clausola 'AS IS')",
-                "Questo software viene distribuito gratuitamente e fornito 'così com'è' (AS IS), senza alcuna garanzia esplicita o implicita.\nL'utente utilizza l'applicazione a proprio rischio e sotto la propria esclusiva responsabilità. Lo sviluppatore non potrà in alcun caso essere ritenuto responsabile per danni diretti, indiretti, perdite di dati, blocchi operativi o alterazioni del sistema derivanti dall'utilizzo delle funzioni di ottimizzazione.");
+                "Questo software viene distribuito gratuitamente e fornito 'così com'è' (AS IS), senza alcuna garanzia esplicita o implicita.\nL'utente utilizza l'applicazione a proprio rischio e sotto la propria esclusiva responsabilità. Lo sviluppatore non potrà in alcun caso essere ritenuto responsabile per danni diretti, indiretti, perdite di dati, blocchi operativi o alterazioni del sistema derivanti dall'utilizzo delle funzioni di ottimizzazione.", null);
 
             addSection("💡 Raccomandazioni per la Sicurezza del Sistema",
-                "Tutti i comandi e le operazioni raccomandate sono progettati per essere sicuri e non distruttivi per l'integrità del sistema operativo.\nTuttavia, per eseguire manutenzioni profonde (pulizia componenti WinSxS, riallineamento registro o riparazioni DISM), si raccomanda sempre di creare preventivamente un Punto di Ripristino di Windows (attivabile direttamente dall'elenco compiti dell'app).");
+                "Tutti i comandi e le operazioni raccomandate sono progettati per essere sicuri e non distruttivi per l'integrità del sistema operativo.\nTuttavia, per eseguire manutenzioni profonde (pulizia componenti WinSxS, riallineamento registro o riparazioni DISM), si raccomanda sempre di creare preventivamente un Punto di Ripristino di Windows (attivabile direttamente dall'elenco compiti dell'app).", null);
 
             addSection("⚖️ Proprietà Intellettuale & Marchi Registrati",
-                "Windows 10, Windows 11, DISM, SFC, CHKDSK e Microsoft sono marchi registrati di proprietà di Microsoft Corporation.\nQuesto software è un progetto indipendente gratuito e open-source e non è affiliato, associato, sponsorizzato né autorizzato in alcun modo da Microsoft Corporation.");
+                "Windows 10, Windows 11, DISM, SFC, CHKDSK e Microsoft sono marchi registrati di proprietà di Microsoft Corporation.\nQuesto software è un progetto indipendente gratuito e open-source e non è affiliato, associato, sponsorizzato né autorizzato in alcun modo da Microsoft Corporation.", null);
+
+            Button btnDonate = new Button
+            {
+                Content = "☕ Fai un'offerta libera su Ko-fi (ko-fi.com/kabuby)",
+                Height = 34,
+                FontWeight = FontWeights.Bold,
+                FontSize = 11.5,
+                Background = new SolidColorBrush(Color.FromRgb(255, 94, 91)),
+                Foreground = Brushes.White,
+                BorderBrush = new SolidColorBrush(Color.FromRgb(255, 94, 91)),
+                BorderThickness = new Thickness(1),
+                Cursor = Cursors.Hand,
+                Margin = new Thickness(0, 8, 0, 2),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Padding = new Thickness(14, 0, 14, 0)
+            };
+            btnDonate.Click += (s, e) => {
+                try {
+                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo("https://ko-fi.com/kabuby") { UseShellExecute = true });
+                } catch { }
+            };
 
             addSection("☕ Supporta lo Sviluppo (Offerta Libera)",
-                "Questo strumento è completamente gratuito, privo di pubblicità e senza alcuna raccolta dati telemetrici.\nSe il programma ti è stato utile per velocizzare e mantenere in salute il tuo computer, puoi supportare il tempo e il lavoro dedicato allo sviluppo continuo con una donazione libera tramite PayPal o Ko-fi.");
+                "Questo strumento è completamente gratuito, privo di pubblicità e senza alcuna raccolta dati.\nSe il programma ti è stato utile per velocizzare e mantenere in salute il tuo computer, puoi supportare il lavoro dedicato allo sviluppo continuo con una donazione libera tramite PayPal, Carta di Credito, Apple Pay o Google Pay su Ko-fi:", btnDonate);
 
             sv.Content = spContent;
             Grid.SetRow(sv, 1);

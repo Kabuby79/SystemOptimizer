@@ -4,7 +4,7 @@
 [![Platform](https://img.shields.io/badge/Platform-x64-blue.svg)](https://github.com)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8%20%7C%20WPF-purple.svg)](https://dotnet.microsoft.com)
-[![Support](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com)
+[![Support](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/kabuby)
 
 **Universal System & Windows Maintenance Center** è una suite di manutenzione desktop standalone ad alte prestazioni per Windows 10 e Windows 11. Progettata con un'interfaccia moderna in stile **Dark Glassmorphism**, riunisce strumenti avanzati di diagnostica hardware, riparazione dell'integrità di sistema, risparmio energetico e pulizia profonda in un **unico file eseguibile portabile**.
 
@@ -71,7 +71,7 @@ Il progetto non richiede l'installazione di pesanti IDE esterni: può essere com
 
 Se questo software ti è stato utile per velocizzare, ottimizzare e mantenere in salute il tuo PC, puoi supportare lo sviluppo continuo e i futuri aggiornamenti con una donazione libera:
 
-[![Support me on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com)
+[![Support me on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/kabuby)
 
 ---
 *Progettato per garantire la massima efficienza e velocità su Windows.*
