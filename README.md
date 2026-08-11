@@ -1,10 +1,20 @@
 # 🚀 Universal System & Windows Maintenance Center
 
-[![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?logo=windows&logoColor=white)](https://github.com)
-[![Platform](https://img.shields.io/badge/Platform-x64-blue.svg)](https://github.com)
+[![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-0078D6?logo=windows&logoColor=white)](https://github.com/Kabuby79/SystemOptimizer)
+[![Platform](https://img.shields.io/badge/Platform-x64-blue.svg)](https://github.com/Kabuby79/SystemOptimizer)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Framework](https://img.shields.io/badge/.NET%20Framework-4.8%20%7C%20WPF-purple.svg)](https://dotnet.microsoft.com)
 [![Support](https://img.shields.io/badge/Support-Ko--fi-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/kabuby)
+
+<p align="center">
+  <a href="https://github.com/Kabuby79/SystemOptimizer/releases/latest/download/SystemOptimizer.exe">
+    <img src="https://img.shields.io/badge/📥%20SCARICA%20PER%20WINDOWS-SystemOptimizer.exe%20(v1.0.0)-2ea44f?style=for-the-badge&logo=windows&logoColor=white" alt="Download SystemOptimizer.exe" height="42">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://ko-fi.com/kabuby">
+    <img src="https://img.shields.io/badge/☕%20OFFERTA%20LIBERA-Supporta%20su%20Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white" alt="Support on Ko-fi" height="42">
+  </a>
+</p>
 
 **Universal System & Windows Maintenance Center** è una suite di manutenzione desktop standalone ad alte prestazioni per Windows 10 e Windows 11. Progettata con un'interfaccia moderna in stile **Dark Glassmorphism**, riunisce strumenti avanzati di diagnostica hardware, riparazione dell'integrità di sistema, risparmio energetico e pulizia profonda in un **unico file eseguibile portabile**.
 
@@ -37,9 +47,9 @@
 
 ---
 
-## 📥 Download & Utilizzo
+## 📥 Download Diretto & Avvio
 
-1. Scarica l'ultima versione di **`SystemOptimizer.exe`** dalla sezione [**Releases**](https://github.com).
+1. Clicca sul pulsante verde in alto **"SCARICA PER WINDOWS"** per scaricare direttamente **`SystemOptimizer.exe`**.
 2. Fai doppio clic su `SystemOptimizer.exe`.
 3. Il programma richiederà automaticamente i privilegi di Amministratore (UAC) necessari per eseguire le manutenzioni di sistema.
 
