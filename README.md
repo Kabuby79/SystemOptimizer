@@ -8,92 +8,64 @@
 
 <p align="center">
   <a href="https://github.com/Kabuby79/SystemOptimizer/releases/latest/download/SystemOptimizer.exe">
-    <img src="https://img.shields.io/badge/📥%20SCARICA%20PER%20WINDOWS-SystemOptimizer.exe%20(v1.0.0)-2ea44f?style=for-the-badge&logo=windows&logoColor=white" alt="Download SystemOptimizer.exe" height="42">
+    <img src="https://img.shields.io/badge/📥%20DOWNLOAD%20FOR%20WINDOWS-SystemOptimizer.exe%20(v1.1.0)-2ea44f?style=for-the-badge&logo=windows&logoColor=white" alt="Download SystemOptimizer.exe" height="42">
   </a>
   &nbsp;&nbsp;
   <a href="https://ko-fi.com/kabuby">
-    <img src="https://img.shields.io/badge/☕%20OFFERTA%20LIBERA-Supporta%20su%20Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white" alt="Support on Ko-fi" height="42">
+    <img src="https://img.shields.io/badge/☕%20KO--FI-Support%20Development-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white" alt="Support on Ko-fi" height="42">
   </a>
 </p>
 
-**Universal System & Windows Maintenance Center** è una suite di manutenzione desktop standalone ad alte prestazioni per Windows 10 e Windows 11. Progettata con un'interfaccia moderna in stile **Dark Glassmorphism**, riunisce strumenti avanzati di diagnostica hardware, riparazione dell'integrità di sistema, risparmio energetico e pulizia profonda in un **unico file eseguibile portabile**.
+---
+
+## 🇮🇹 Descrizione in Italiano
+
+**Universal System & Windows Maintenance Center** è una suite di manutenzione desktop standalone ad alte prestazioni per Windows 10 e Windows 11. Progettata con un'interfaccia moderna in stile **Dark Glassmorphism**, riunisce strumenti avanzati di diagnostica hardware, riparazione dell'integrità di sistema, risparmio energetico e pulizia profonda in un **unico file eseguibile portabile di 200 KB** (nessuna installazione richiesta).
+
+> 🌐 **Bilingue Automatico**: Il programma rileva automaticamente la lingua di Windows. Si avvia in **Italiano** su sistemi italiani ed in **Inglese** su tutti gli altri sistemi. È possibile cambiare lingua istantaneamente cliccando sul pulsante `🌐` nella barra superiore.
+
+### 🌟 Caratteristiche Principali
+* ⚡ **Profili di Manutenzione Rapidi**: Basic, Consigliati, Totale o Selezione Manuale con un clic.
+* 🔍 **Ricerca Istantanea in Tempo Reale**: Filtra all'istante l'elenco dei compiti digitando parole chiave (es. *sfc, dism, batteria, cache, registry*).
+* 📊 **Diagnostica Hardware & S.M.A.R.T.**: Monitoraggio in tempo reale del carico di CPU, RAM, GPU e dello stato di salute predittivo di SSD/HDD.
+* 📄 **Report Crash & Errori di Windows**: Esporta un report completo che analizza il Registro Eventi degli ultimi 14 giorni evidenziando schermate blu (BSOD), riavvii improvvisi (Kernel-Power 41) e blocchi applicativi.
+
+### 📥 Download e Avvio
+1. Scarica **`SystemOptimizer.exe`** cliccando sul pulsante verde in alto.
+2. Fai doppio clic per avviarlo. Richiederà i primi privilegi di Amministratore per eseguire i comandi di sistema.
+*(Se Windows SmartScreen mostra un avviso blu, clicca su "Ulteriori informazioni" ➔ "Esegui comunque").*
 
 ---
 
-## 📸 Anteprima & Screenshot
+## 🇬🇧 Description in English
 
-<p align="center">
-  <img src="screenshots/screenshot_1_interfaccia_chiara.png" alt="Interfaccia Semplice e Chiara" width="850">
-</p>
+**Universal System & Windows Maintenance Center** is a high-performance standalone desktop maintenance suite for Windows 10 and Windows 11. Built with a modern **Dark Glassmorphic UI**, it gathers advanced hardware diagnostics, system file repair, power saving, and deep cleanup tools into a **single portable 200 KB executable** (no installation required).
 
-<p align="center">
-  <img src="screenshots/screenshot_2_monitoraggio_live.png" alt="Monitoraggio in Tempo Reale e Sicurezza" width="850">
-</p>
+> 🌐 **Automatic Bilingual Support**: The application automatically detects your Windows display language. It starts in **Italian** on Italian systems and in **English** on all other systems. You can toggle the language instantly by clicking the `🌐` button in the top header.
 
----
+### 🌟 Key Features
+* ⚡ **Quick Maintenance Profiles**: Run Basic, Recommended, Total, or custom Manual cleanups with one click.
+* 🔍 **Instant Real-Time Search**: Instantly filter tasks by typing keywords (e.g., *sfc, dism, battery, cache, registry*).
+* 📊 **Hardware Diagnostics & S.M.A.R.T.**: Real-time monitoring of CPU/RAM/GPU loads and SSD/HDD predictive health status.
+* 📄 **Windows Crash Diagnostics**: Generates a detailed .txt report parsing the Event Log for recent BSODs, unexpected reboots (Kernel-Power 41), and application crashes.
 
-## 🌟 Caratteristiche Principali
-
-### ⚡ Profili di Manutenzione Rapidi
-* 🛡️ **Manutenzione Basic**: Esegue compiti di manutenzione ordinaria leggeri e veloci (pulizia cache DNS, file temporanei sicuri, svuotamento cestino, TRIM SSD).
-* ⭐ **Seleziona Consigliati**: Il profilo di riferimento ideale per mantenere il PC reattivo e protetto senza alcun rischio.
-* 🚀 **Manutenzione Totale**: Esegue una manutenzione profonda e completa dell'intero sistema operativo per utenti esperti.
-* ✍️ **Selezione Manuale**: Permette di personalizzare liberamente ogni singolo compito con un clic.
-
-### 🔍 Ricerca Istantanea in Tempo Reale
-* Campo di ricerca dinamico integrato per trovare al volo qualsiasi funzione o strumento per parola chiave (es. *sfc*, *dism*, *batteria*, *driver*, *cache*, *telemetria*).
-
-### 📊 Diagnostica Hardware & S.M.A.R.T.
-* **Monitoraggio in Tempo Reale**: Carico e specifiche di CPU, Memoria RAM (libera/in uso), GPU e versione dei driver grafici.
-* **Stato di Salute Dischi & S.M.A.R.T.**: Rilevamento di tutti i dischi fisici interni ed esterni con verifica preventiva dei sensori di guasto hardware.
-* **Analisi File System**: Controllo compatibilità blocchi in scrittura, Defrag e CHKDSK per ogni partizione.
-
-### 🛡️ Riparazione Avanzata del Sistema Operativo
-* **Integrità File di Sistema (SFC)**: Scansione e ripristino automatico dei file Windows corrotti.
-* **Riparazione Immagine Windows (DISM)**: Ripristino dello stato di salute dell'archivio componenti (`RestoreHealth`).
-* **Pulizia Profonda WinSxS**: Rimozione sicura dei vecchi pacchetti di aggiornamento obsoleti per liberare giga di spazio.
-* **Rete e Risparmio Energia**: Reset stack TCP/IP, Flush DNS e attivazione dei profili energetici ottimizzati.
-
-### 📄 Report Completo Hardware & Software (.txt)
-* Esportazione con un clic di un report dettagliato contenente tutte le specifiche hardware, le partizioni, lo stato dei servizi critici, l'avvio automatico e la **diagnostica degli errori/crash di Windows (BSOD, Kernel-Power 41, Application Hang/Error)** degli ultimi 14 giorni.
+### 📥 Download and Start
+1. Download **`SystemOptimizer.exe`** by clicking the green button above.
+2. Double-click to run. It will request Administrator privileges (UAC) to run system tools.
+*(If Windows SmartScreen shows a blue warning, click "More info" ➔ "Run anyway").*
 
 ---
 
-## 📥 Download Diretto & Avvio
-
-1. Clicca sul pulsante verde in alto **"SCARICA PER WINDOWS"** per scaricare direttamente **`SystemOptimizer.exe`**.
-2. Fai doppio clic su `SystemOptimizer.exe`.
-3. Il programma richiederà automaticamente i privilegi di Amministratore (UAC) necessari per eseguire le manutenzioni di sistema.
-
-> ℹ️ **Nota Windows SmartScreen**:
-> Trattandosi di un'applicazione open-source gratuita distribuita senza certificato a pagamento per la firma digitale, al primo avvio Windows Defender SmartScreen potrebbe mostrare un avviso blu (*"PC protetto da Windows"*). È sufficiente cliccare su **"Ulteriori informazioni"** ➔ **"Esegui comunque"**.
-
----
-
-## 🛠️ Compilazione da Sorgente
-
-Il progetto non richiede l'installazione di pesanti IDE esterni: può essere compilato direttamente tramite lo script PowerShell incluso utilizzando il compilatore nativo Windows:
+## 🛠️ Compilazione / Compiling (C# 5)
 
 ```powershell
-# Esegui lo script di compilazione nativo
-.\build_app.ps1
+# Esegui lo script di compilazione nativo / Run the native compilation script
+powershell -ExecutionPolicy Bypass -File build_app.ps1
 ```
 
 ---
 
-## ⚖️ Note Legali & Disclaimer (Esclusione di Responsabilità)
-
-* **Licenza & Uso**: Questo software viene distribuito gratuitamente e fornito *"così com'è"* (**AS IS**), senza garanzie di alcun tipo, esplicite o implicite. L'utente utilizza l'applicazione a proprio rischio e discrezione.
-* **Responsabilità**: Lo sviluppatore non potrà in alcun caso essere ritenuto responsabile per danni diretti o indiretti, perdite di dati o instabilità di sistema derivanti dall'utilizzo o dall'errata esecuzione delle funzioni avanzate.
-* **Marchi Registrati**: *Windows 10, Windows 11, DISM, SFC, CHKDSK e Microsoft sono marchi registrati di Microsoft Corporation. Questo progetto è indipendente e non è affiliato, autorizzato né sponsorizzato da Microsoft.*
-
----
-
-## ☕ Supporta lo Sviluppo
-
-Se questo software ti è stato utile per velocizzare, ottimizzare e mantenere in salute il tuo PC, puoi supportare lo sviluppo continuo e i futuri aggiornamenti con una donazione libera:
+## ☕ Supporta lo Sviluppo / Support Development
+Se questo software ti è stato utile per velocizzare e ottimizzare il tuo PC, puoi supportare lo sviluppo con una donazione libera:
 
 [![Support me on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/kabuby)
-
----
-*Progettato per garantire la massima efficienza e velocità su Windows.*
