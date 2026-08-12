@@ -88,9 +88,6 @@ namespace UniversalOptimizer
 
     public class MainWindow : Window
     {
-        public static bool IsItalian = true;
-        public static string L(string it, string en) { return IsItalian ? it : en; }
-
         private SystemInfo sysInfo = new SystemInfo();
         private List<TaskItem> allTasks = new List<TaskItem>();
         private List<TaskItem> activeTasks = new List<TaskItem>();
@@ -162,9 +159,7 @@ namespace UniversalOptimizer
 
         public MainWindow()
         {
-            
-            IsItalian = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLower() == "it";
-            this.Title = MainWindow.L("Universal System & Windows Maintenance Center", "Universal System & Windows Maintenance Center");
+            this.Title = "Universal System & Windows Maintenance Center";
             this.Width = 1280;
             this.Height = 880;
             this.MinWidth = 1050;
@@ -224,88 +219,71 @@ namespace UniversalOptimizer
             }
         }
 
-        
-        private void UpdateUILanguage()
-        {
-            
-            IsItalian = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToLower() == "it";
-            this.Title = MainWindow.L("Universal System & Windows Maintenance Center", "Universal System & Windows Maintenance Center");
-            InitTasks(); 
-            allTasks.RemoveAll(t => t.Id.StartsWith("dyn_"));
-            ScanDynamicStartupApps();
-            ScanDynamicThirdPartyServices();
-            UpdateDynamicTasksStates();
-            
-            UpdateHwCards();
-            RenderTaskList();
-            UpdateFooterSummary();
-        }
-
         private void InitTasks()
         {
             allTasks = new List<TaskItem>()
             {
                 // RISPARMIO ENERGIA & BATTERIA
-                new TaskItem("power_standby", "power", MainWindow.L("Risparmio Energia & Batteria", "Power & Battery Saving"), MainWindow.L("Ottimizza Timeout Schermo & Sospensione a Batteria", "Optimize Screen Timeout & Battery Sleep"), MainWindow.L("Imposta lo spegnimento schermo a 5 min e la sospensione automatica a 15 min a batteria.", "Set screen off to 5 min and auto sleep to 15 min on battery."), "powercfg /change monitor-timeout-dc 5; powercfg /change standby-timeout-dc 15", true),
-                new TaskItem("power_pcie", "power", MainWindow.L("Risparmio Energia & Batteria", "Power & Battery Saving"), MainWindow.L("Abilita Risparmio Massimo Bus PCIe (Link State Management)", "Enable Max PCIe Bus Savings (Link State Management)"), MainWindow.L("Riduce il consumo energetico di NVMe e bus PCIe quando non sotto carico.", "Riduce il consumo energetico di NVMe e bus PCIe quando non sotto carico."), "powercfg /setdcvalueindex scheme_current sub_pci express 2; powercfg /setactive scheme_current", true),
-                new TaskItem("power_usb", "power", MainWindow.L("Risparmio Energia & Batteria", "Power & Battery Saving"), MainWindow.L("Abilita Sospensione Selettiva Porte USB", "Enable Sospensione Selettiva Porte USB"), MainWindow.L("Sospende l'alimentazione alle porte USB inattive prolungando l'autonomia a batteria.", "Sospende l'alimentazione alle porte USB inattive prolungando l'autonomia a batteria."), "powercfg /setdcvalueindex scheme_current 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 1; powercfg /setactive scheme_current", true),
-                new TaskItem("power_wake", "power", MainWindow.L("Risparmio Energia & Batteria", "Power & Battery Saving"), MainWindow.L("Disabilita Timer di Riattivazione Nascosti (No Wake-ups)", "Disable Timer di Riattivazione Nascosti (No Wake-ups)"), MainWindow.L("Impedisce riattivazioni improvvise dallo standby (evita surriscaldamenti nello zaino).", "Prevents riattivazioni improvvise dallo standby (evita surriscaldamenti nello zaino)."), "powercfg /setdcvalueindex scheme_current 238c9fa8-0aad-41ed-83f4-97be242c8f20 bd3b718a-0680-4d9d-8ab2-e1d2b4ac806d 0; powercfg /setactive scheme_current", true),
-                new TaskItem("power_profile", "power", MainWindow.L("Risparmio Energia & Batteria", "Power & Battery Saving"), MainWindow.L("Attiva Profilo Energetico Bilanciato Intelligente", "Activate Profilo Energetico Bilanciato Intelligente"), MainWindow.L("Ottimizza la regolazione automatica delle frequenze e delle ventole del sistema.", "Ottimizza la regolazione automatica delle frequenze e delle ventole del system."), "powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e", true),
-                new TaskItem("power_hiber", "power", MainWindow.L("Risparmio Energia & Batteria", "Power & Battery Saving"), MainWindow.L("Riduci Dimensione File Ibernazione (Libera fino a 32GB)", "Reduce Dimensione File Ibernazione (Libera fino a 32GB)"), MainWindow.L("Imposta l'ibernazione ridotta per liberare spazio prezioso su disco C:.", "Imposta l'ibernazione ridotta per liberare spazio prezioso su disco C:."), "powercfg /h /type reduced", false),
+                new TaskItem("power_standby", "power", "Risparmio Energia & Batteria", "Ottimizza Timeout Schermo & Sospensione a Batteria", "Imposta lo spegnimento schermo a 5 min e la sospensione automatica a 15 min a batteria.", "powercfg /change monitor-timeout-dc 5; powercfg /change standby-timeout-dc 15", true),
+                new TaskItem("power_pcie", "power", "Risparmio Energia & Batteria", "Abilita Risparmio Massimo Bus PCIe (Link State Management)", "Riduce il consumo energetico di NVMe e bus PCIe quando non sotto carico.", "powercfg /setdcvalueindex scheme_current sub_pci express 2; powercfg /setactive scheme_current", true),
+                new TaskItem("power_usb", "power", "Risparmio Energia & Batteria", "Abilita Sospensione Selettiva Porte USB", "Sospende l'alimentazione alle porte USB inattive prolungando l'autonomia a batteria.", "powercfg /setdcvalueindex scheme_current 2a737441-1930-4402-8d77-b2bebba308a3 48e6b7a6-50f5-4782-a5d4-53bb8f07e226 1; powercfg /setactive scheme_current", true),
+                new TaskItem("power_wake", "power", "Risparmio Energia & Batteria", "Disabilita Timer di Riattivazione Nascosti (No Wake-ups)", "Impedisce riattivazioni improvvise dallo standby (evita surriscaldamenti nello zaino).", "powercfg /setdcvalueindex scheme_current 238c9fa8-0aad-41ed-83f4-97be242c8f20 bd3b718a-0680-4d9d-8ab2-e1d2b4ac806d 0; powercfg /setactive scheme_current", true),
+                new TaskItem("power_profile", "power", "Risparmio Energia & Batteria", "Attiva Profilo Energetico Bilanciato Intelligente", "Ottimizza la regolazione automatica delle frequenze e delle ventole del sistema.", "powercfg /setactive 381b4222-f694-41f0-9685-ff5bb260df2e", true),
+                new TaskItem("power_hiber", "power", "Risparmio Energia & Batteria", "Riduci Dimensione File Ibernazione (Libera fino a 32GB)", "Imposta l'ibernazione ridotta per liberare spazio prezioso su disco C:.", "powercfg /h /type reduced", false),
 
                 // MANUTENZIONE & RIPARAZIONE WINDOWS
-                new TaskItem("win_dism", "win_maintenance", MainWindow.L("Manutenzione & Riparazione Windows", "Windows Maintenance & Repair"), MainWindow.L("Riparazione Archivio Componenti (DISM RestoreHealth)", "Riparazione Archivio Componenti (DISM RestoreHealth)"), MainWindow.L("Verifica e ripara i file dell'archivio componenti con l'immagine ufficiale Microsoft.", "Verify e ripara i files dell'archivio componenti con l'immagine ufficiale Microsoft."), "DISM.exe /Online /Cleanup-Image /RestoreHealth", true),
-                new TaskItem("win_winsxs", "win_maintenance", MainWindow.L("Manutenzione & Riparazione Windows", "Windows Maintenance & Repair"), MainWindow.L("Pulizia Approfondita Componenti Obsoleti & WinSxS", "Cleanup Approfondita Componenti Obsoleti & WinSxS"), MainWindow.L("Elimina i backup storici di Windows Update liberando diversi GB su C:.", "Deletes i backup storici di Windows Update liberando diversi GB su C:."), "DISM.exe /Online /Cleanup-Image /StartComponentCleanup /ResetBase", true),
-                new TaskItem("win_sfc", "win_maintenance", MainWindow.L("Manutenzione & Riparazione Windows", "Windows Maintenance & Repair"), MainWindow.L("Verifica Integrità File di Sistema Protetti (SFC /scannow)", "Verify Integrità File di Sistema Protetti (SFC /scannow)"), MainWindow.L("Scansiona e ripristina file DLL e driver di sistema protetti danneggiati.", "Scansiona e ripristina files DLL e driver di system protetti danneggiati."), "sfc.exe /scannow", true),
-                new TaskItem("win_chkdsk", "win_maintenance", MainWindow.L("Manutenzione & Riparazione Windows", "Windows Maintenance & Repair"), MainWindow.L("Controllo File System & Metadati (CHKDSK Scan)", "Check File System & Metadati (CHKDSK Scan)"), MainWindow.L("Esegue un controllo online non distruttivo del filesystem NTFS su C:.", "Esegue un controllo online non distruttivo del filessystem NTFS su C:."), "chkdsk.exe C: /scan", true),
-                new TaskItem("win_netreset", "win_maintenance", MainWindow.L("Manutenzione & Riparazione Windows", "Windows Maintenance & Repair"), MainWindow.L("Reset Completo Stack di Rete TCP/IP e Winsock", "Reset Completo Stack di Rete TCP/IP e Winsock"), MainWindow.L("Reinizializza il catalogo Winsock e TCP/IP risolvendo disconnessioni e lag.", "Reinizializza il catalogo Winsock e TCP/IP risolvendo disconnessioni e lag."), "netsh winsock reset; netsh int ip reset", false),
+                new TaskItem("win_dism", "win_maintenance", "Manutenzione & Riparazione Windows", "Riparazione Archivio Componenti (DISM RestoreHealth)", "Verifica e ripara i file dell'archivio componenti con l'immagine ufficiale Microsoft.", "DISM.exe /Online /Cleanup-Image /RestoreHealth", true),
+                new TaskItem("win_winsxs", "win_maintenance", "Manutenzione & Riparazione Windows", "Pulizia Approfondita Componenti Obsoleti & WinSxS", "Elimina i backup storici di Windows Update liberando diversi GB su C:.", "DISM.exe /Online /Cleanup-Image /StartComponentCleanup /ResetBase", true),
+                new TaskItem("win_sfc", "win_maintenance", "Manutenzione & Riparazione Windows", "Verifica Integrità File di Sistema Protetti (SFC /scannow)", "Scansiona e ripristina file DLL e driver di sistema protetti danneggiati.", "sfc.exe /scannow", true),
+                new TaskItem("win_chkdsk", "win_maintenance", "Manutenzione & Riparazione Windows", "Controllo File System & Metadati (CHKDSK Scan)", "Esegue un controllo online non distruttivo del filesystem NTFS su C:.", "chkdsk.exe C: /scan", true),
+                new TaskItem("win_netreset", "win_maintenance", "Manutenzione & Riparazione Windows", "Reset Completo Stack di Rete TCP/IP e Winsock", "Reinizializza il catalogo Winsock e TCP/IP risolvendo disconnessioni e lag.", "netsh winsock reset; netsh int ip reset", false),
 
                 // APP DI AVVIO
-                new TaskItem("start_copilot", "startup", MainWindow.L("App di Avvio (Startup)", "Startup Apps"), MainWindow.L("Disabilita Microsoft Copilot al Boot", "Disable Microsoft Copilot al Boot"), MainWindow.L("Rimuove il precaricamento automatico di Copilot all'accesso (risparmia RAM).", "Rimuove il precaricamento automatico di Copilot all'accesso (risparmia RAM)."), "Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -ErrorAction SilentlyContinue | Get-Member -MemberType NoteProperty | Where-Object { $_.Name -like 'MicrosoftCopilotAutoLaunch*' } | ForEach-Object { Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name $_.Name -ErrorAction SilentlyContinue }", true),
-                new TaskItem("start_edge", "startup", MainWindow.L("App di Avvio (Startup)", "Startup Apps"), MainWindow.L("Disabilita Precaricamento Microsoft Edge", "Disable Precaricamento Microsoft Edge"), MainWindow.L("Impedisce a Edge di avviarsi nascosto in background all'accensione (Startup Boost).", "Prevents a Edge di avviarsi nascosto in background all'accensione (Startup Boost)."), "Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -ErrorAction SilentlyContinue | Get-Member -MemberType NoteProperty | Where-Object { $_.Name -like 'MicrosoftEdgeAutoLaunch*' } | ForEach-Object { Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name $_.Name -ErrorAction SilentlyContinue }", true),
-                new TaskItem("start_vpn", "startup", MainWindow.L("App di Avvio (Startup)", "Startup Apps"), MainWindow.L("Disabilita Avvio Automatico VPN Terze Parti", "Disable Startup Automatico VPN Terze Parti"), MainWindow.L("Rimuove l'avvio automatico continuo di client VPN all'avvio.", "Rimuove l'avvio automatico continuo di client VPN all'avvio."), "Remove-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name 'BdVpnApp' -ErrorAction SilentlyContinue", true),
-                new TaskItem("start_unattend", "startup", MainWindow.L("App di Avvio (Startup)", "Startup Apps"), MainWindow.L("Rimuovi Residui Script di Setup (renameUnattend.bat)", "Remove Residui Script di Setup (renameUnattend.bat)"), MainWindow.L("Elimina file batch orfani nella cartella di avvio di sistema.", "Deletes files batch orfani nella folder di avvio di system."), "Remove-Item 'C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\renameUnattend.bat' -Force -ErrorAction SilentlyContinue", true),
-                new TaskItem("start_pcloud", "startup", MainWindow.L("App di Avvio (Startup)", "Startup Apps"), MainWindow.L("Disabilita Avvio Automatico pCloud Drive", "Disable Startup Automatico pCloud Drive"), MainWindow.L("Avvia pCloud solo quando apri manualmente l'app anziché sempre in background.", "Avvia pCloud solo quando apri manualmente l'app anziché sempre in background."), "Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name 'pCloud' -ErrorAction SilentlyContinue", false),
+                new TaskItem("start_copilot", "startup", "App di Avvio (Startup)", "Disabilita Microsoft Copilot al Boot", "Rimuove il precaricamento automatico di Copilot all'accesso (risparmia RAM).", "Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -ErrorAction SilentlyContinue | Get-Member -MemberType NoteProperty | Where-Object { $_.Name -like 'MicrosoftCopilotAutoLaunch*' } | ForEach-Object { Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name $_.Name -ErrorAction SilentlyContinue }", true),
+                new TaskItem("start_edge", "startup", "App di Avvio (Startup)", "Disabilita Precaricamento Microsoft Edge", "Impedisce a Edge di avviarsi nascosto in background all'accensione (Startup Boost).", "Get-ItemProperty 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -ErrorAction SilentlyContinue | Get-Member -MemberType NoteProperty | Where-Object { $_.Name -like 'MicrosoftEdgeAutoLaunch*' } | ForEach-Object { Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name $_.Name -ErrorAction SilentlyContinue }", true),
+                new TaskItem("start_vpn", "startup", "App di Avvio (Startup)", "Disabilita Avvio Automatico VPN Terze Parti", "Rimuove l'avvio automatico continuo di client VPN all'avvio.", "Remove-ItemProperty -Path 'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name 'BdVpnApp' -ErrorAction SilentlyContinue", true),
+                new TaskItem("start_unattend", "startup", "App di Avvio (Startup)", "Rimuovi Residui Script di Setup (renameUnattend.bat)", "Elimina file batch orfani nella cartella di avvio di sistema.", "Remove-Item 'C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\renameUnattend.bat' -Force -ErrorAction SilentlyContinue", true),
+                new TaskItem("start_pcloud", "startup", "App di Avvio (Startup)", "Disabilita Avvio Automatico pCloud Drive", "Avvia pCloud solo quando apri manualmente l'app anziché sempre in background.", "Remove-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' -Name 'pCloud' -ErrorAction SilentlyContinue", false),
 
                 // TELEMETRIA & SERVIZI
-                new TaskItem("telem_diagtrack", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Telemetria & Esperienze Utente (DiagTrack)", "Disable Telemetria & Esperienze Utente (DiagTrack)"), MainWindow.L("Arresta e disabilita il servizio Connected User Experiences per massima privacy.", "Arresta e disabilita il servizio Connected User Experiences per massima privacy."), "Stop-Service 'DiagTrack', 'dmwappushservice' -Force -ErrorAction SilentlyContinue; Set-Service 'DiagTrack', 'dmwappushservice' -StartupType Disabled -ErrorAction SilentlyContinue", true),
-                new TaskItem("telem_inventory", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Valutazione Inventario (InventorySvc)", "Disable Valutazione Inventario (InventorySvc)"), MainWindow.L("Disattiva il monitoraggio diagnostico Microsoft Compatibility Appraiser.", "Disattiva il monitoraggio diagnostico Microsoft Compatibility Appraiser."), "Stop-Service 'InventorySvc' -Force -ErrorAction SilentlyContinue; Set-Service 'InventorySvc' -StartupType Disabled -ErrorAction SilentlyContinue", true),
+                new TaskItem("telem_diagtrack", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Telemetria & Esperienze Utente (DiagTrack)", "Arresta e disabilita il servizio Connected User Experiences per massima privacy.", "Stop-Service 'DiagTrack', 'dmwappushservice' -Force -ErrorAction SilentlyContinue; Set-Service 'DiagTrack', 'dmwappushservice' -StartupType Disabled -ErrorAction SilentlyContinue", true),
+                new TaskItem("telem_inventory", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Valutazione Inventario (InventorySvc)", "Disattiva il monitoraggio diagnostico Microsoft Compatibility Appraiser.", "Stop-Service 'InventorySvc' -Force -ErrorAction SilentlyContinue; Set-Service 'InventorySvc' -StartupType Disabled -ErrorAction SilentlyContinue", true),
                 // Samsung
-                new TaskItem("telem_samsung_sa", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Samsung Analytics Agent (SA)", "Disable Samsung Analytics Agent (SA)"), MainWindow.L("Arresta la telemetria statistica Samsung in background.", "Arresta la telemetria statistica Samsung in background."), "Stop-Service 'SamsungAnalyticsService' -Force -ErrorAction SilentlyContinue; Set-Service 'SamsungAnalyticsService' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
-                new TaskItem("telem_samsung_hqm", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Samsung Hardware Quality Monitoring", "Disable Samsung Hardware Quality Monitoring"), MainWindow.L("Disattiva il logging di diagnostica hardware Samsung.", "Disattiva il logging di diagnostica hardware Samsung."), "Stop-Service 'SamsungHQMService' -Force -ErrorAction SilentlyContinue; Set-Service 'SamsungHQMService' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
-                new TaskItem("telem_bixby", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Bixby Voice & SysTray Hook", "Disable Bixby Voice & SysTray Hook"), MainWindow.L("Arresta Bixby, elimina il task di avvio e disinstalla il pacchetto vocale.", "Arresta Bixby, elimina il task di avvio e disinstalla il pacchetto vocale."), "Stop-Process -Name BixbySystray, UWPBixbyClient -Force -ErrorAction SilentlyContinue; Stop-Service 'SamsungBixbyService' -Force -ErrorAction SilentlyContinue; Set-Service 'SamsungBixbyService' -StartupType Disabled -ErrorAction SilentlyContinue; Get-AppxPackage *Bixby* -ErrorAction SilentlyContinue | Remove-AppxPackage -ErrorAction SilentlyContinue", true, "samsung"),
-                new TaskItem("bloat_livewall", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Servizio Live Wallpaper", "Disable Serviceso Live Wallpaper"), MainWindow.L("Arresta il processo di sfondi animati che consuma GPU e batteria.", "Arresta il processo di wallpapers animati che consuma GPU e batteria."), "Stop-Service 'LiveWallpaperService' -Force -ErrorAction SilentlyContinue; Set-Service 'LiveWallpaperService' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
-                new TaskItem("bloat_quicksearch", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Samsung Quick Search Service & Indexer", "Disable Samsung Quick Search Service & Indexer"), MainWindow.L("Disattiva l'indicizzatore duplicato e le attività pianificate correlate.", "Disattiva l'indicizzatore duplicato e le attività pianificate correlate."), "Stop-Service 'Quick Search Service' -Force -ErrorAction SilentlyContinue; Set-Service 'Quick Search Service' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
-                new TaskItem("bloat_smartswitch", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Servizio Smart Switch", "Disable Serviceso Smart Switch"), MainWindow.L("Disattiva il demone residente in RAM per trasferimento file da smartphone.", "Disattiva il demone residente in RAM per trasferimento files da smartphone."), "Stop-Service 'SmartSwitchService' -Force -ErrorAction SilentlyContinue; Set-Service 'SmartSwitchService' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
-                new TaskItem("bloat_camerashare", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Rimuovi Samsung Camera Share", "Remove Samsung Camera Share"), MainWindow.L("Disinstalla l'app e il relativo servizio in background.", "Disinstalla l'app e il relativo servizio in background."), "Get-AppxPackage *CameraShare* -ErrorAction SilentlyContinue | Remove-AppxPackage -ErrorAction SilentlyContinue; Stop-Service 'SamsungCameraShareService' -Force -ErrorAction SilentlyContinue", true, "samsung"),
+                new TaskItem("telem_samsung_sa", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Samsung Analytics Agent (SA)", "Arresta la telemetria statistica Samsung in background.", "Stop-Service 'SamsungAnalyticsService' -Force -ErrorAction SilentlyContinue; Set-Service 'SamsungAnalyticsService' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
+                new TaskItem("telem_samsung_hqm", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Samsung Hardware Quality Monitoring", "Disattiva il logging di diagnostica hardware Samsung.", "Stop-Service 'SamsungHQMService' -Force -ErrorAction SilentlyContinue; Set-Service 'SamsungHQMService' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
+                new TaskItem("telem_bixby", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Bixby Voice & SysTray Hook", "Arresta Bixby, elimina il task di avvio e disinstalla il pacchetto vocale.", "Stop-Process -Name BixbySystray, UWPBixbyClient -Force -ErrorAction SilentlyContinue; Stop-Service 'SamsungBixbyService' -Force -ErrorAction SilentlyContinue; Set-Service 'SamsungBixbyService' -StartupType Disabled -ErrorAction SilentlyContinue; Get-AppxPackage *Bixby* -ErrorAction SilentlyContinue | Remove-AppxPackage -ErrorAction SilentlyContinue", true, "samsung"),
+                new TaskItem("bloat_livewall", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Servizio Live Wallpaper", "Arresta il processo di sfondi animati che consuma GPU e batteria.", "Stop-Service 'LiveWallpaperService' -Force -ErrorAction SilentlyContinue; Set-Service 'LiveWallpaperService' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
+                new TaskItem("bloat_quicksearch", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Samsung Quick Search Service & Indexer", "Disattiva l'indicizzatore duplicato e le attività pianificate correlate.", "Stop-Service 'Quick Search Service' -Force -ErrorAction SilentlyContinue; Set-Service 'Quick Search Service' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
+                new TaskItem("bloat_smartswitch", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Servizio Smart Switch", "Disattiva il demone residente in RAM per trasferimento file da smartphone.", "Stop-Service 'SmartSwitchService' -Force -ErrorAction SilentlyContinue; Set-Service 'SmartSwitchService' -StartupType Disabled -ErrorAction SilentlyContinue", true, "samsung"),
+                new TaskItem("bloat_camerashare", "telemetry", "Servizi, Bloatware & Telemetria", "Rimuovi Samsung Camera Share", "Disinstalla l'app e il relativo servizio in background.", "Get-AppxPackage *CameraShare* -ErrorAction SilentlyContinue | Remove-AppxPackage -ErrorAction SilentlyContinue; Stop-Service 'SamsungCameraShareService' -Force -ErrorAction SilentlyContinue", true, "samsung"),
                 // Dell
-                new TaskItem("telem_dell", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Telemetria Dell SupportAssist / Data Vault", "Disable Telemetria Dell SupportAssist / Data Vault"), MainWindow.L("Arresta i servizi di telemetria e raccolta log Dell.", "Arresta i servizi di telemetria e raccolta log Dell."), "@('DellDataVault', 'DellDataVaultProcessor', 'SupportAssistAgent') | ForEach-Object { Stop-Service $_ -Force -ErrorAction SilentlyContinue; Set-Service $_ -StartupType Disabled -ErrorAction SilentlyContinue }", true, "dell"),
+                new TaskItem("telem_dell", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Telemetria Dell SupportAssist / Data Vault", "Arresta i servizi di telemetria e raccolta log Dell.", "@('DellDataVault', 'DellDataVaultProcessor', 'SupportAssistAgent') | ForEach-Object { Stop-Service $_ -Force -ErrorAction SilentlyContinue; Set-Service $_ -StartupType Disabled -ErrorAction SilentlyContinue }", true, "dell"),
                 // HP
-                new TaskItem("telem_hp", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita HP Touchpoint Analytics & Telemetria", "Disable HP Touchpoint Analytics & Telemetria"), MainWindow.L("Disattiva i servizi di raccolta dati e diagnostica invasiva HP.", "Disattiva i servizi di raccolta dati e diagnostica invasiva HP."), "@('HPAppHelperCap', 'HPNetworkCap', 'HPSysInfoCap', 'HPAnalytics') | ForEach-Object { Stop-Service $_ -Force -ErrorAction SilentlyContinue; Set-Service $_ -StartupType Disabled -ErrorAction SilentlyContinue }", true, "hp"),
+                new TaskItem("telem_hp", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita HP Touchpoint Analytics & Telemetria", "Disattiva i servizi di raccolta dati e diagnostica invasiva HP.", "@('HPAppHelperCap', 'HPNetworkCap', 'HPSysInfoCap', 'HPAnalytics') | ForEach-Object { Stop-Service $_ -Force -ErrorAction SilentlyContinue; Set-Service $_ -StartupType Disabled -ErrorAction SilentlyContinue }", true, "hp"),
                 // Lenovo
-                new TaskItem("telem_lenovo", "telemetry", MainWindow.L("Servizi, Bloatware & Telemetria", "Services, Bloatware & Telemetry"), MainWindow.L("Disabilita Telemetria Lenovo Experience Improvement", "Disable Telemetria Lenovo Experience Improvement"), MainWindow.L("Disattiva il logging di utilizzo e telemetria Lenovo in background.", "Disattiva il logging di utilizzo e telemetria Lenovo in background."), "@('LenovoVantageService', 'ImControllerService') | ForEach-Object { Stop-Service $_ -Force -ErrorAction SilentlyContinue; Set-Service $_ -StartupType Manual -ErrorAction SilentlyContinue }", true, "lenovo"),
+                new TaskItem("telem_lenovo", "telemetry", "Servizi, Bloatware & Telemetria", "Disabilita Telemetria Lenovo Experience Improvement", "Disattiva il logging di utilizzo e telemetria Lenovo in background.", "@('LenovoVantageService', 'ImControllerService') | ForEach-Object { Stop-Service $_ -Force -ErrorAction SilentlyContinue; Set-Service $_ -StartupType Manual -ErrorAction SilentlyContinue }", true, "lenovo"),
 
                 // HARDWARE, GRAFICA & DRIVER
-                new TaskItem("os_w11_widgets", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("[Win 11] Disabilita Feed Notizie & Widget Barra", "[Win 11] Disable Feed Notizie & Widget Barra"), MainWindow.L("Disattiva i widget con notizie online e feed che consumano memoria WebView2.", "Disattiva i widget con notizie online e feed che consumano memoria WebView2."), "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarDa' -Value 0 -ErrorAction SilentlyContinue", true, "all", "win11"),
-                new TaskItem("os_w11_chat", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("[Win 11] Disabilita Chat / Teams Consumer in Background", "[Win 11] Disable Chat / Teams Consumer in Background"), MainWindow.L("Rimuove l'icona Chat/Teams integrata nella barra di Windows 11.", "Rimuove l'icona Chat/Teams integrata nella barra di Windows 11."), "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarMn' -Value 0 -ErrorAction SilentlyContinue", true, "all", "win11"),
-                new TaskItem("os_w10_cortana", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("[Win 10] Disabilita Assistente Cortana in Background", "[Win 10] Disable Assistente Cortana in Background"), MainWindow.L("Disattiva l'assistente vocale Cortana residente nei processi di Windows 10.", "Disattiva l'assistente vocale Cortana residente nei processi di Windows 10."), "$path = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search'; if(-not (Test-Path $path)){ New-Item -Path $path -Force | Out-Null }; Set-ItemProperty -Path $path -Name 'AllowCortana' -Value 0 -ErrorAction SilentlyContinue", true, "all", "win10"),
-                new TaskItem("os_w10_news", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("[Win 10] Disabilita 'Notizie e Interessi' Barra", "[Win 10] Disable 'Notizie e Interessi' Barra"), MainWindow.L("Rimuove il widget meteo/notizie con feed in background su Windows 10.", "Rimuove il widget meteo/notizie con feed in background su Windows 10."), "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Feeds' -Name 'ShellFeedsTaskbarViewMode' -Value 2 -ErrorAction SilentlyContinue", true, "all", "win10"),
-                new TaskItem("hw_winupdates", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("Verifica ed Installa Aggiornamenti Windows", "Verify ed Installa Updatementi Windows"), MainWindow.L("Apre il pannello delle impostazioni di Windows Update per cercare patch di sistema.", "Apre il pannello delle impostazioni di Windows Update per cercare patch di system."), "Start-Process ms-settings:windowsupdate", true),
-                new TaskItem("hw_driverupdates", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("Verifica ed Installa Aggiornamenti Driver", "Verify ed Installa Updatementi Driver"), MainWindow.L("Ricerca online e propone in un popup i driver hardware da scaricare e installare.", "Ricerca online e propone in un popup i driver hardware da scaricare e installare."), "custom_driver_updates", true),
-                new TaskItem("hw_winget", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("Aggiorna Tutte le App e Pacchetti con WinGet", "Update Tutte le App e Pacchetti con WinGet"), MainWindow.L("Esegue 'winget upgrade --all' per aggiornare tutti i software installati.", "Esegue 'winget upgrade --all' per aggiornare tutti i software installati."), "winget upgrade --all --include-unknown --accept-package-agreements --accept-source-agreements", false),
-                new TaskItem("hw_hags", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("Abilita Accelerazione Hardware GPU (HAGS)", "Enable Accelerazione Hardware GPU (HAGS)"), MainWindow.L("Consente alla GPU di gestire direttamente la VRAM riducendo latenza e carico CPU.", "Consente alla GPU di gestire direttamente la VRAM riducendo latenza e carico CPU."), "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'HwSchMode' -Value 2 -ErrorAction SilentlyContinue", true),
-                new TaskItem("hw_gamedvr", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("Disabilita Registrazione Background Xbox GameDVR", "Disable Registrazione Background Xbox GameDVR"), MainWindow.L("Disattiva il buffer video Xbox continuo, eliminando micro-stuttering e liberando RAM.", "Disattiva il buffer video Xbox continuo, eliminando micro-stuttering e liberando RAM."), "Set-ItemProperty -Path 'HKCU:\\System\\GameConfigStore' -Name 'GameDVR_Enabled' -Value 0 -ErrorAction SilentlyContinue", true),
-                new TaskItem("net_delivery", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("Disabilita Condivisione P2P Windows Update", "Disable Condivisione P2P Windows Update"), MainWindow.L("Impedisce a Windows Update di usare la banda e CPU per inviare file ad altri PC.", "Prevents a Windows Update di usare la banda e CPU per inviare files ad altri PC."), "if (-not (Test-Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization')) { New-Item 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization' -Force | Out-Null }; Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization' -Name 'DODownloadMode' -Value 0 -ErrorAction SilentlyContinue", true),
-                new TaskItem("hw_trim", "hardware", MainWindow.L("Hardware, Grafica & Driver", "Hardware, Graphics & Drivers"), MainWindow.L("Esegui Re-TRIM Ottimizzazione SSD NVMe", "Esegui Re-TRIM Ottimizzazione SSD NVMe"), MainWindow.L("Invia il comando TRIM su tutte le unità SSD per massimizzare la velocità di scrittura.", "Invia il comando TRIM su tutte le unità SSD per massimizzare la velocità di scrittura."), "Optimize-Volume -DriveLetter C -ReTrim -Verbose", true),
+                new TaskItem("os_w11_widgets", "hardware", "Hardware, Grafica & Driver", "[Win 11] Disabilita Feed Notizie & Widget Barra", "Disattiva i widget con notizie online e feed che consumano memoria WebView2.", "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarDa' -Value 0 -ErrorAction SilentlyContinue", true, "all", "win11"),
+                new TaskItem("os_w11_chat", "hardware", "Hardware, Grafica & Driver", "[Win 11] Disabilita Chat / Teams Consumer in Background", "Rimuove l'icona Chat/Teams integrata nella barra di Windows 11.", "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced' -Name 'TaskbarMn' -Value 0 -ErrorAction SilentlyContinue", true, "all", "win11"),
+                new TaskItem("os_w10_cortana", "hardware", "Hardware, Grafica & Driver", "[Win 10] Disabilita Assistente Cortana in Background", "Disattiva l'assistente vocale Cortana residente nei processi di Windows 10.", "$path = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search'; if(-not (Test-Path $path)){ New-Item -Path $path -Force | Out-Null }; Set-ItemProperty -Path $path -Name 'AllowCortana' -Value 0 -ErrorAction SilentlyContinue", true, "all", "win10"),
+                new TaskItem("os_w10_news", "hardware", "Hardware, Grafica & Driver", "[Win 10] Disabilita 'Notizie e Interessi' Barra", "Rimuove il widget meteo/notizie con feed in background su Windows 10.", "Set-ItemProperty -Path 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Feeds' -Name 'ShellFeedsTaskbarViewMode' -Value 2 -ErrorAction SilentlyContinue", true, "all", "win10"),
+                new TaskItem("hw_winupdates", "hardware", "Hardware, Grafica & Driver", "Verifica ed Installa Aggiornamenti Windows", "Apre il pannello delle impostazioni di Windows Update per cercare patch di sistema.", "Start-Process ms-settings:windowsupdate", true),
+                new TaskItem("hw_driverupdates", "hardware", "Hardware, Grafica & Driver", "Verifica ed Installa Aggiornamenti Driver", "Ricerca online e propone in un popup i driver hardware da scaricare e installare.", "custom_driver_updates", true),
+                new TaskItem("hw_winget", "hardware", "Hardware, Grafica & Driver", "Aggiorna Tutte le App e Pacchetti con WinGet", "Esegue 'winget upgrade --all' per aggiornare tutti i software installati.", "winget upgrade --all --include-unknown --accept-package-agreements --accept-source-agreements", false),
+                new TaskItem("hw_hags", "hardware", "Hardware, Grafica & Driver", "Abilita Accelerazione Hardware GPU (HAGS)", "Consente alla GPU di gestire direttamente la VRAM riducendo latenza e carico CPU.", "Set-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\GraphicsDrivers' -Name 'HwSchMode' -Value 2 -ErrorAction SilentlyContinue", true),
+                new TaskItem("hw_gamedvr", "hardware", "Hardware, Grafica & Driver", "Disabilita Registrazione Background Xbox GameDVR", "Disattiva il buffer video Xbox continuo, eliminando micro-stuttering e liberando RAM.", "Set-ItemProperty -Path 'HKCU:\\System\\GameConfigStore' -Name 'GameDVR_Enabled' -Value 0 -ErrorAction SilentlyContinue", true),
+                new TaskItem("net_delivery", "hardware", "Hardware, Grafica & Driver", "Disabilita Condivisione P2P Windows Update", "Impedisce a Windows Update di usare la banda e CPU per inviare file ad altri PC.", "if (-not (Test-Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization')) { New-Item 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization' -Force | Out-Null }; Set-ItemProperty -Path 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\DeliveryOptimization' -Name 'DODownloadMode' -Value 0 -ErrorAction SilentlyContinue", true),
+                new TaskItem("hw_trim", "hardware", "Hardware, Grafica & Driver", "Esegui Re-TRIM Ottimizzazione SSD NVMe", "Invia il comando TRIM su tutte le unità SSD per massimizzare la velocità di scrittura.", "Optimize-Volume -DriveLetter C -ReTrim -Verbose", true),
 
                 // PULIZIA & CACHE
-                new TaskItem("clean_winupdate", "cleanup", MainWindow.L("Pulizia & Cache", "Cleanup & Cache"), MainWindow.L("Svuota Cache Download Windows Update", "Empty Cache Download Windows Update"), MainWindow.L("Elimina i file di installazione temporanei scaricati da Windows Update.", "Deletes i files di installazione temporanei scaricati da Windows Update."), "Stop-Service 'wuauserv' -Force -ErrorAction SilentlyContinue; Remove-Item 'C:\\Windows\\SoftwareDistribution\\Download\\*' -Recurse -Force -ErrorAction SilentlyContinue; Start-Service 'wuauserv' -ErrorAction SilentlyContinue", true),
-                new TaskItem("clean_wer", "cleanup", MainWindow.L("Pulizia & Cache", "Cleanup & Cache"), MainWindow.L("Pulizia File di Crash (Windows Error Reporting)", "Cleanup File di Crash (Windows Error Reporting)"), MainWindow.L("Elimina dump di memoria e log di crash accumulati in Windows.", "Deletes dump di memoria e log di crash accumulati in Windows."), "Remove-Item 'C:\\ProgramData\\Microsoft\\Windows\\WER\\ReportArchive\\*' -Recurse -Force -ErrorAction SilentlyContinue", true),
-                new TaskItem("clean_dns", "cleanup", MainWindow.L("Pulizia & Cache", "Cleanup & Cache"), MainWindow.L("Flush Completo Resolver DNS di Windows", "Flush Completo Resolver DNS di Windows"), MainWindow.L("Svuota la cache locale DNS risolvendo eventuali errori di connessione.", "Empty la cache locale DNS risolvendo eventuali errori di connessione."), "Clear-DnsClientCache; ipconfig /flushdns", true),
-                new TaskItem("clean_browsers", "cleanup", MainWindow.L("Pulizia & Cache", "Cleanup & Cache"), MainWindow.L("Pulizia Approfondita Cache Browser (Chrome/Edge/Firefox/Brave)", "Cleanup Approfondita Cache Browser (Chrome/Edge/Firefox/Brave)"), MainWindow.L("Elimina cache HTTP, GPU cache e shader liberando centinaia di MB.", "Deletes cache HTTP, GPU cache e shader liberando centinaia di MB."), "$dirs = @('$env:LOCALAPPDATA\\Google\\Chrome\\User Data\\*\\*Cache*', '$env:LOCALAPPDATA\\Microsoft\\Edge\\User Data\\*\\*Cache*', '$env:LOCALAPPDATA\\BraveSoftware\\Brave-Browser\\User Data\\*\\*Cache*', '$env:LOCALAPPDATA\\Mozilla\\Firefox\\Profiles\\*\\cache2'); foreach($d in $dirs){ Get-Item $d -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item -Path \"$($_.FullName)\\*\" -Recurse -Force -ErrorAction SilentlyContinue } }", true),
-                new TaskItem("clean_temp", "cleanup", MainWindow.L("Pulizia & Cache", "Cleanup & Cache"), MainWindow.L("Pulizia File Temporanei Windows (%TEMP% e Temp)", "Cleanup File Temporanei Windows (%TEMP% e Temp)"), MainWindow.L("Elimina file temporanei di sistema per liberare spazio su disco.", "Deletes files temporanei di system per liberare spazio su disco."), "Remove-Item -Path \"$env:TEMP\\*\" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item -Path 'C:\\Windows\\Temp\\*' -Recurse -Force -ErrorAction SilentlyContinue", true),
-                new TaskItem("clean_spotlight", "cleanup", MainWindow.L("Pulizia & Cache", "Cleanup & Cache"), MainWindow.L("Rimuovi Icona 'Scopri questa immagine' (Spotlight) Desktop", "Remove Icona 'Scopri questa immagine' (Spotlight) Desktop"), MainWindow.L("Nasconde l'icona indesiderata di Windows Spotlight dal desktop.", "Nasconde l'icona indesiderata di Windows Spotlight dal desktop."), "$reg = 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel'; if(-not (Test-Path $reg)){ New-Item -Path $reg -Force | Out-Null }; Set-ItemProperty -Path $reg -Name '{2cc5ca98-6485-489a-920e-b3e88a6ccce3}' -Value 1 -Type DWord -ErrorAction SilentlyContinue", true),
-                new TaskItem("clean_trash", "cleanup", MainWindow.L("Pulizia & Cache", "Cleanup & Cache"), MainWindow.L("Svuota Cestino di Windows", "Empty Cestino di Windows"), MainWindow.L("Elimina definitivamente gli elementi presenti nel cestino.", "Deletes definitivamente gli elementi presenti nel cestino."), "Clear-RecycleBin -Force -ErrorAction SilentlyContinue", false)
+                new TaskItem("clean_winupdate", "cleanup", "Pulizia & Cache", "Svuota Cache Download Windows Update", "Elimina i file di installazione temporanei scaricati da Windows Update.", "Stop-Service 'wuauserv' -Force -ErrorAction SilentlyContinue; Remove-Item 'C:\\Windows\\SoftwareDistribution\\Download\\*' -Recurse -Force -ErrorAction SilentlyContinue; Start-Service 'wuauserv' -ErrorAction SilentlyContinue", true),
+                new TaskItem("clean_wer", "cleanup", "Pulizia & Cache", "Pulizia File di Crash (Windows Error Reporting)", "Elimina dump di memoria e log di crash accumulati in Windows.", "Remove-Item 'C:\\ProgramData\\Microsoft\\Windows\\WER\\ReportArchive\\*' -Recurse -Force -ErrorAction SilentlyContinue", true),
+                new TaskItem("clean_dns", "cleanup", "Pulizia & Cache", "Flush Completo Resolver DNS di Windows", "Svuota la cache locale DNS risolvendo eventuali errori di connessione.", "Clear-DnsClientCache; ipconfig /flushdns", true),
+                new TaskItem("clean_browsers", "cleanup", "Pulizia & Cache", "Pulizia Approfondita Cache Browser (Chrome/Edge/Firefox/Brave)", "Elimina cache HTTP, GPU cache e shader liberando centinaia di MB.", "$dirs = @('$env:LOCALAPPDATA\\Google\\Chrome\\User Data\\*\\*Cache*', '$env:LOCALAPPDATA\\Microsoft\\Edge\\User Data\\*\\*Cache*', '$env:LOCALAPPDATA\\BraveSoftware\\Brave-Browser\\User Data\\*\\*Cache*', '$env:LOCALAPPDATA\\Mozilla\\Firefox\\Profiles\\*\\cache2'); foreach($d in $dirs){ Get-Item $d -ErrorAction SilentlyContinue | ForEach-Object { Remove-Item -Path \"$($_.FullName)\\*\" -Recurse -Force -ErrorAction SilentlyContinue } }", true),
+                new TaskItem("clean_temp", "cleanup", "Pulizia & Cache", "Pulizia File Temporanei Windows (%TEMP% e Temp)", "Elimina file temporanei di sistema per liberare spazio su disco.", "Remove-Item -Path \"$env:TEMP\\*\" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item -Path 'C:\\Windows\\Temp\\*' -Recurse -Force -ErrorAction SilentlyContinue", true),
+                new TaskItem("clean_spotlight", "cleanup", "Pulizia & Cache", "Rimuovi Icona 'Scopri questa immagine' (Spotlight) Desktop", "Nasconde l'icona indesiderata di Windows Spotlight dal desktop.", "$reg = 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\HideDesktopIcons\\NewStartPanel'; if(-not (Test-Path $reg)){ New-Item -Path $reg -Force | Out-Null }; Set-ItemProperty -Path $reg -Name '{2cc5ca98-6485-489a-920e-b3e88a6ccce3}' -Value 1 -Type DWord -ErrorAction SilentlyContinue", true),
+                new TaskItem("clean_trash", "cleanup", "Pulizia & Cache", "Svuota Cestino di Windows", "Elimina definitivamente gli elementi presenti nel cestino.", "Clear-RecycleBin -Force -ErrorAction SilentlyContinue", false)
             };
         }
 
@@ -313,7 +291,7 @@ namespace UniversalOptimizer
         {
             try
             {
-                progress(10, MainWindow.L("Rilevamento modello dispositivo e OEM...", "Detecting modello dispositivo e OEM..."));
+                progress(10, "Rilevamento modello dispositivo e OEM...");
                 using (var s = new ManagementObjectSearcher("SELECT Manufacturer, Model FROM Win32_ComputerSystem"))
                 {
                     foreach (var o in s.Get())
@@ -324,7 +302,7 @@ namespace UniversalOptimizer
                 }
                 sysInfo.DeviceModel = sysInfo.Manufacturer + " " + sysInfo.Model;
 
-                progress(25, MainWindow.L("Rilevamento dettagli processore (CPU)...", "Detecting dettagli processore (CPU)..."));
+                progress(25, "Rilevamento dettagli processore (CPU)...");
                 using (var s = new ManagementObjectSearcher("SELECT Name, NumberOfCores, NumberOfLogicalProcessors FROM Win32_Processor"))
                 {
                     foreach (var o in s.Get())
@@ -334,7 +312,7 @@ namespace UniversalOptimizer
                     }
                 }
 
-                progress(40, MainWindow.L("Analisi memoria RAM e sistema operativo...", "Analyzing memoria RAM e system operativo..."));
+                progress(40, "Analisi memoria RAM e sistema operativo...");
                 using (var s = new ManagementObjectSearcher("SELECT Caption, TotalVisibleMemorySize, FreePhysicalMemory, OSArchitecture, Version FROM Win32_OperatingSystem"))
                 {
                     foreach (var o in s.Get())
@@ -351,7 +329,7 @@ namespace UniversalOptimizer
                     }
                 }
 
-                progress(55, MainWindow.L("Rilevamento scheda video (GPU) e driver...", "Detecting scheda video (GPU) e driver..."));
+                progress(55, "Rilevamento scheda video (GPU) e driver...");
                 using (var s = new ManagementObjectSearcher("SELECT Name, DriverVersion FROM Win32_VideoController"))
                 {
                     foreach (var o in s.Get())
@@ -365,7 +343,7 @@ namespace UniversalOptimizer
                     }
                 }
 
-                progress(70, MainWindow.L("Analisi spazio libero e file system su C:...", "Analyzing spazio libero e files system su C:..."));
+                progress(70, "Analisi spazio libero e file system su C:...");
                 DriveInfo c = new DriveInfo("C");
                 if (c.IsReady)
                 {
@@ -389,12 +367,12 @@ namespace UniversalOptimizer
 
                 sysInfo.IsLaptop = CheckIsLaptop();
 
-                progress(80, MainWindow.L("Verifica servizi ed elementi di avvio...", "Verify servizi ed elementi di avvio..."));
+                progress(80, "Verifica servizi ed elementi di avvio...");
                 allTasks.RemoveAll(t => t.Id.StartsWith("dyn_"));
                 ScanDynamicStartupApps();
                 ScanDynamicThirdPartyServices();
 
-                progress(90, MainWindow.L("Calcolo stima spazio liberabile sul disco...", "Calculating stima spazio liberabile sul disco..."));
+                progress(90, "Calcolo stima spazio liberabile sul disco...");
                 // Calculate space estimates for cleanup tasks
                 foreach (var task in allTasks)
                 {
@@ -433,7 +411,7 @@ namespace UniversalOptimizer
                 });
 
                 UpdateDynamicTasksStates();
-                progress(100, MainWindow.L("Caricamento completato!", "Caricamento completato!"));
+                progress(100, "Caricamento completato!");
             }
             catch { }
         }
@@ -947,19 +925,19 @@ namespace UniversalOptimizer
 
             StackPanel spTitles = new StackPanel() { VerticalAlignment = VerticalAlignment.Center };
             StackPanel spTitleBadges = new StackPanel() { Orientation = Orientation.Horizontal };
-            TextBlock lblMainTitle = new TextBlock() { Text = MainWindow.L("Universal System & Windows Maintenance Center", "Universal System & Windows Maintenance Center"), FontSize = 18, FontWeight = FontWeights.Bold, Foreground = brushTextWhite };
+            TextBlock lblMainTitle = new TextBlock() { Text = "Universal System & Windows Maintenance Center", FontSize = 18, FontWeight = FontWeights.Bold, Foreground = brushTextWhite };
             
             Border bdrCredit = new Border() { Background = new SolidColorBrush(Color.FromArgb(40, 168, 85, 247)), BorderBrush = brushPurple, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(12), Padding = new Thickness(10, 3, 10, 3), Margin = new Thickness(16, 0, 8, 0) };
-            bdrCredit.Child = new TextBlock() { Text = MainWindow.L("★ Sviluppato da E.P. con AI", "★ Sviluppato da E.P. con AI"), FontSize = 11, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(216, 180, 254)) };
+            bdrCredit.Child = new TextBlock() { Text = "★ Sviluppato da E.P. con AI", FontSize = 11, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(216, 180, 254)) };
 
             Border bdrAdmin = new Border() { Background = new SolidColorBrush(Color.FromArgb(40, 16, 185, 129)), BorderBrush = brushEmerald, BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(12), Padding = new Thickness(10, 3, 10, 3) };
-            bdrAdmin.Child = new TextBlock() { Text = MainWindow.L("✓ ADMIN READY", "✓ ADMIN READY"), FontSize = 11, FontWeight = FontWeights.Bold, Foreground = brushEmerald };
+            bdrAdmin.Child = new TextBlock() { Text = "✓ ADMIN READY", FontSize = 11, FontWeight = FontWeights.Bold, Foreground = brushEmerald };
 
             spTitleBadges.Children.Add(lblMainTitle);
             spTitleBadges.Children.Add(bdrCredit);
             spTitleBadges.Children.Add(bdrAdmin);
 
-            TextBlock lblSubTitle = new TextBlock() { Text = MainWindow.L("Manutenzione completa Windows 10/11 • Risparmio Energia & Batteria • Ottimizzazione Hardware", "Manutenzione completa Windows 10/11 • Risparmio Energia & Batteria • Ottimizzazione Hardware"), FontSize = 12, Foreground = brushTextSlate, Margin = new Thickness(0, 4, 0, 0) };
+            TextBlock lblSubTitle = new TextBlock() { Text = "Manutenzione completa Windows 10/11 • Risparmio Energia & Batteria • Ottimizzazione Hardware", FontSize = 12, Foreground = brushTextSlate, Margin = new Thickness(0, 4, 0, 0) };
 
             spTitles.Children.Add(spTitleBadges);
             spTitles.Children.Add(lblSubTitle);
@@ -967,7 +945,7 @@ namespace UniversalOptimizer
             StackPanel spHeaderButtons = new StackPanel() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
 
             Button btnRefresh = new Button() {
-                Content = MainWindow.L("🔄 Ricontrolla PC", "🔄 Ricontrolla PC"),
+                Content = "🔄 Ricontrolla PC",
                 VerticalAlignment = VerticalAlignment.Center,
                 Width = 130,
                 Height = 36,
@@ -983,7 +961,7 @@ namespace UniversalOptimizer
             };
             btnRefresh.Click += (s, e) => {
                 splashOverlay.Visibility = Visibility.Visible;
-                txtSplashStatus.Text = MainWindow.L("Riavvio analisi del PC...", "Riavvio analisi del PC...");
+                txtSplashStatus.Text = "Riavvio analisi del PC...";
                 splashProgressBar.Value = 0;
 
                 Task.Run(() =>
@@ -1004,13 +982,13 @@ namespace UniversalOptimizer
                         RenderTaskList();
                         UpdateFooterSummary();
                         splashOverlay.Visibility = Visibility.Collapsed;
-                        MessageBox.Show(MainWindow.L("Diagnostica hardware e controllo sistema aggiornati con successo!", "Diagnostica hardware e controllo system aggiornati con successo!"), MainWindow.L("Universal Optimizer", "Universal Optimizer"), MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Diagnostica hardware e controllo sistema aggiornati con successo!", "Universal Optimizer", MessageBoxButton.OK, MessageBoxImage.Information);
                     });
                 });
             };
 
             Button btnExportReport = new Button() {
-                Content = MainWindow.L("📄 Report Sistema", "📄 Report Sistema"),
+                Content = "📄 Report Sistema",
                 VerticalAlignment = VerticalAlignment.Center,
                 Width = 140,
                 Height = 36,
@@ -1026,7 +1004,7 @@ namespace UniversalOptimizer
             btnExportReport.Click += BtnExportReport_Click;
 
             Button btnDisclaimer = new Button() {
-                Content = MainWindow.L("ℹ️ Note Legali & Info", "ℹ️ Note Legali & Info"),
+                Content = "ℹ️ Note Legali & Info",
                 VerticalAlignment = VerticalAlignment.Center,
                 Width = 150,
                 Height = 36,
@@ -1063,7 +1041,7 @@ namespace UniversalOptimizer
             grdHw.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(96) });
             grdHw.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
 
-            txtHwHeader = new TextBlock() { Text = MainWindow.L("📊 RAPPORTO HARDWARE & DIAGNOSTICA IN TEMPO REALE (", "📊 RAPPORTO HARDWARE & DIAGNOSTICA IN TEMPO REALE (") + sysInfo.DeviceModel + " • " + sysInfo.OEMBrand.ToUpper() + ")", FontSize = 12, FontWeight = FontWeights.Bold, Foreground = brushCyan };
+            txtHwHeader = new TextBlock() { Text = "📊 RAPPORTO HARDWARE & DIAGNOSTICA IN TEMPO REALE (" + sysInfo.DeviceModel + " • " + sysInfo.OEMBrand.ToUpper() + ")", FontSize = 12, FontWeight = FontWeights.Bold, Foreground = brushCyan };
             Grid.SetRow(txtHwHeader, 0);
             grdHw.Children.Add(txtHwHeader);
 
@@ -1124,11 +1102,11 @@ namespace UniversalOptimizer
 
             DockPanel dpHwFooter = new DockPanel();
             
-            txtOsFooterTag = new TextBlock() { Text = MainWindow.L("Sistema: ", "Sistema: ") + sysInfo.OS + "  |  Versione: " + (sysInfo.OSType == "win11" ? "Windows 11 (Rilevato)" : "Windows 10 (Rilevato)"), FontSize = 11, Foreground = brushTextMuted, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 2, 0, 0) };
+            txtOsFooterTag = new TextBlock() { Text = "Sistema: " + sysInfo.OS + "  |  Versione: " + (sysInfo.OSType == "win11" ? "Windows 11 (Rilevato)" : "Windows 10 (Rilevato)"), FontSize = 11, Foreground = brushTextMuted, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(4, 2, 0, 0) };
             DockPanel.SetDock(txtOsFooterTag, Dock.Left);
 
             TextBlock txtDonateLink = new TextBlock() {
-                Text = MainWindow.L("☕ Fai un'offerta libera", "☕ Fai un'offerta libera"),
+                Text = "☕ Fai un'offerta libera",
                 FontSize = 11,
                 FontWeight = FontWeights.SemiBold,
                 Foreground = brushTextWhite,
@@ -1167,7 +1145,7 @@ namespace UniversalOptimizer
             DockPanel dpControls = new DockPanel();
 
             btnProfiles = new Button() {
-                Content = MainWindow.L("⭐ Seleziona Consigliati ▾", "⭐ Seleziona Consigliati ▾"),
+                Content = "⭐ Seleziona Consigliati ▾",
                 FontSize = 11,
                 FontWeight = FontWeights.Bold,
                 Background = new SolidColorBrush(Color.FromRgb(26, 36, 56)),
@@ -1252,7 +1230,7 @@ namespace UniversalOptimizer
                 Foreground = brushTextSlate,
                 BorderBrush = brushBorder,
                 BorderThickness = new Thickness(1),
-                Text = MainWindow.L("🔍 Cerca...", "🔍 Cerca..."),
+                Text = "🔍 Cerca...",
                 VerticalContentAlignment = VerticalAlignment.Center,
                 Padding = new Thickness(8, 0, 8, 0),
                 Margin = new Thickness(10, 0, 0, 0),
@@ -1268,7 +1246,7 @@ namespace UniversalOptimizer
             };
             txtSearch.LostFocus += (s, e) => {
                 if (string.IsNullOrEmpty(txtSearch.Text)) {
-                    txtSearch.Text = MainWindow.L("🔍 Cerca...", "🔍 Cerca...");
+                    txtSearch.Text = "🔍 Cerca...";
                     txtSearch.Foreground = brushTextSlate;
                 }
             };
@@ -1300,12 +1278,12 @@ namespace UniversalOptimizer
 
             StackPanel spSummary = new StackPanel() { Orientation = Orientation.Horizontal, VerticalAlignment = VerticalAlignment.Center };
             txtSelectedCount = new TextBlock() { Text = "0", FontSize = 22, FontWeight = FontWeights.Bold, Foreground = brushCyan, Margin = new Thickness(0, 0, 10, 0) };
-            txtSummaryDesc = new TextBlock() { Text = MainWindow.L("operazioni selezionate pronte per l'esecuzione.", "operazioni selezionate pronte per l'esecuzione."), FontSize = 13, Foreground = brushTextSlate, VerticalAlignment = VerticalAlignment.Center };
+            txtSummaryDesc = new TextBlock() { Text = "operazioni selezionate pronte per l'esecuzione.", FontSize = 13, Foreground = brushTextSlate, VerticalAlignment = VerticalAlignment.Center };
             spSummary.Children.Add(txtSelectedCount);
             spSummary.Children.Add(txtSummaryDesc);
 
             btnRun = new Button() {
-                Content = MainWindow.L("⚡ ESEGUI MANUTENZIONE SELEZIONATA", "⚡ ESEGUI MANUTENZIONE SELEZIONATA"),
+                Content = "⚡ ESEGUI MANUTENZIONE SELEZIONATA",
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Width = 340,
                 Height = 48,
@@ -1451,7 +1429,7 @@ namespace UniversalOptimizer
             modalGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });  // Command description/log (gray)
             modalGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(50) });  // Footer Button
 
-            txtModalTitle = new TextBlock() { Text = MainWindow.L("⚡ Applicazione Manutenzioni in corso...", "⚡ Applicazione Manutenzioni in corso..."), FontSize = 16, FontWeight = FontWeights.Bold, Foreground = brushCyan, VerticalAlignment = VerticalAlignment.Center };
+            txtModalTitle = new TextBlock() { Text = "⚡ Applicazione Manutenzioni in corso...", FontSize = 16, FontWeight = FontWeights.Bold, Foreground = brushCyan, VerticalAlignment = VerticalAlignment.Center };
             Grid.SetRow(txtModalTitle, 0);
             modalGrid.Children.Add(txtModalTitle);
 
@@ -1464,7 +1442,7 @@ namespace UniversalOptimizer
                 Margin = new Thickness(0, 4, 0, 6)
             };
             txtModalWarningText = new TextBlock() {
-                Text = MainWindow.L("🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di sistema sono attivi. Non chiudere l'app né spegnere il PC fino al termine.", "🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di system sono attivi. Non chiudere l'app né spegnere il PC fino al termine."),
+                Text = "🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di sistema sono attivi. Non chiudere l'app né spegnere il PC fino al termine.",
                 FontSize = 11,
                 Foreground = brushTextWhite,
                 TextWrapping = TextWrapping.Wrap
@@ -1518,7 +1496,7 @@ namespace UniversalOptimizer
             modalGrid.Children.Add(txtModalCommandLog);
 
             btnModalDone = new Button() {
-                Content = MainWindow.L("🔒 In esecuzione... (non chiudere)", "🔒 In esecuzione... (non chiudere)"),
+                Content = "🔒 In esecuzione... (non chiudere)",
                 Height = 40,
                 Width = 200,
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -1559,7 +1537,7 @@ namespace UniversalOptimizer
 
             TextBlock lblTitle = new TextBlock
             {
-                Text = MainWindow.L("UNIVERSAL MAINTENANCE SUITE", "UNIVERSAL MAINTENANCE SUITE"),
+                Text = "UNIVERSAL MAINTENANCE SUITE",
                 FontSize = 24,
                 FontWeight = FontWeights.Bold,
                 Foreground = brushCyan,
@@ -1571,7 +1549,7 @@ namespace UniversalOptimizer
 
             TextBlock lblSub = new TextBlock
             {
-                Text = MainWindow.L("Analisi iniziale hardware, servizi e stima spazio liberabile in corso...", "Analyzing iniziale hardware, servizi e stima spazio liberabile in corso..."),
+                Text = "Analisi iniziale hardware, servizi e stima spazio liberabile in corso...",
                 FontSize = 13,
                 Foreground = brushTextSlate,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -1582,7 +1560,7 @@ namespace UniversalOptimizer
 
             txtSplashStatus = new TextBlock
             {
-                Text = MainWindow.L("Inizializzazione...", "Inizializzazione..."),
+                Text = "Inizializzazione...",
                 FontSize = 12,
                 Foreground = brushTextWhite,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -1607,7 +1585,7 @@ namespace UniversalOptimizer
 
             TextBlock lblNote = new TextBlock
             {
-                Text = MainWindow.L("La scansione iniziale in background assicura la massima reattività dell'applicazione.", "La scansione iniziale in background assicura la massima reattività dell'applicazione."),
+                Text = "La scansione iniziale in background assicura la massima reattività dell'applicazione.",
                 FontSize = 11,
                 Foreground = brushTextMuted,
                 HorizontalAlignment = HorizontalAlignment.Center,
@@ -1638,7 +1616,7 @@ namespace UniversalOptimizer
 
         private void UpdateHwCards()
         {
-            txtHwHeader.Text = MainWindow.L("📊 RAPPORTO HARDWARE & DIAGNOSTICA IN TEMPO REALE (", "📊 RAPPORTO HARDWARE & DIAGNOSTICA IN TEMPO REALE (") + sysInfo.DeviceModel + " • " + sysInfo.OEMBrand.ToUpper() + ")";
+            txtHwHeader.Text = "📊 RAPPORTO HARDWARE & DIAGNOSTICA IN TEMPO REALE (" + sysInfo.DeviceModel + " • " + sysInfo.OEMBrand.ToUpper() + ")";
             txtCpuTitle.Text = sysInfo.CPU;
             txtCpuSub.Text = sysInfo.Cores;
 
@@ -1646,12 +1624,12 @@ namespace UniversalOptimizer
             txtRamSub.Text = sysInfo.RAM_UsedPercent + "% in uso";
 
             txtGpuTitle.Text = sysInfo.GPU;
-            txtGpuSub.Text = MainWindow.L("Driver: ", "Driver: ") + sysInfo.GPU_Driver;
+            txtGpuSub.Text = "Driver: " + sysInfo.GPU_Driver;
 
             txtDiskTitle.Text = sysInfo.Disk_FreeGB + " GB Liberi / " + sysInfo.Disk_SizeGB + " GB";
-            txtDiskSub.Text = MainWindow.L("TRIM Attivo • ", "TRIM Attivo • ") + sysInfo.Disk_UsedPercent + "% pieno";
+            txtDiskSub.Text = "TRIM Attivo • " + sysInfo.Disk_UsedPercent + "% pieno";
 
-            txtOsFooterTag.Text = MainWindow.L("Sistema: ", "Sistema: ") + sysInfo.OS + "  |  Versione: " + (sysInfo.OSType == "win11" ? "Windows 11 (Rilevato)" : "Windows 10 (Rilevato)");
+            txtOsFooterTag.Text = "Sistema: " + sysInfo.OS + "  |  Versione: " + (sysInfo.OSType == "win11" ? "Windows 11 (Rilevato)" : "Windows 10 (Rilevato)");
         }
 
         private void BtnExportReport_Click(object sender, RoutedEventArgs e)
@@ -1659,7 +1637,7 @@ namespace UniversalOptimizer
             Microsoft.Win32.SaveFileDialog sfd = new Microsoft.Win32.SaveFileDialog();
             sfd.Filter = "Documento di testo (*.txt)|*.txt";
             sfd.FileName = "Report_Sistema_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".txt";
-            sfd.Title = MainWindow.L("Salva Report di Sistema Completo", "Salva Report di Sistema Completo");
+            sfd.Title = "Salva Report di Sistema Completo";
 
             if (sfd.ShowDialog() == true)
             {
@@ -1667,7 +1645,7 @@ namespace UniversalOptimizer
                 {
                     string reportText = GenerateSystemReportText();
                     File.WriteAllText(sfd.FileName, reportText, Encoding.UTF8);
-                    MessageBox.Show(MainWindow.L("Report di sistema salvato con successo!", "Report di system salvato con successo!"), MainWindow.L("Salvataggio Completato", "Salvataggio Completato"), MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Report di sistema salvato con successo!", "Salvataggio Completato", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
@@ -2020,22 +1998,22 @@ namespace UniversalOptimizer
             {
                 if (mode == "light_maintenance")
                 {
-                    btnProfiles.Content = MainWindow.L("🛡️ Manutenzione Basic ▾", "🛡️ Manutenzione Basic ▾");
+                    btnProfiles.Content = "🛡️ Manutenzione Basic ▾";
                     btnProfiles.Foreground = brushCyan;
                 }
                 else if (mode == "recommended")
                 {
-                    btnProfiles.Content = MainWindow.L("⭐ Seleziona Consigliati ▾", "⭐ Seleziona Consigliati ▾");
+                    btnProfiles.Content = "⭐ Seleziona Consigliati ▾";
                     btnProfiles.Foreground = brushEmerald;
                 }
                 else if (mode == "all")
                 {
-                    btnProfiles.Content = MainWindow.L("🚀 Manutenzione Totale ▾", "🚀 Manutenzione Totale ▾");
+                    btnProfiles.Content = "🚀 Manutenzione Totale ▾";
                     btnProfiles.Foreground = brushPurple;
                 }
                 else if (mode == "none")
                 {
-                    btnProfiles.Content = MainWindow.L("✍️ Selezione Manuale ▾", "✍️ Selezione Manuale ▾");
+                    btnProfiles.Content = "✍️ Selezione Manuale ▾";
                     btnProfiles.Foreground = brushAmber;
                 }
             }
@@ -2076,8 +2054,8 @@ namespace UniversalOptimizer
                 CheckBox chk = new CheckBox() { IsChecked = task.Selected, VerticalAlignment = VerticalAlignment.Center, Cursor = Cursors.Hand };
                 task.CheckBoxCtrl = chk;
 
-                chk.Checked += (s, e) => { task.Selected = true; card.Background = brushCardSelected; card.BorderBrush = brushBorderSelected; if (btnProfiles != null) { btnProfiles.Content = MainWindow.L("✍️ Selezione Manuale ▾", "✍️ Selezione Manuale ▾"); btnProfiles.Foreground = brushAmber; } UpdateFooterSummary(); UpdateFilterTabsVisuals(); };
-                chk.Unchecked += (s, e) => { task.Selected = false; card.Background = brushCard; card.BorderBrush = brushBorder; if (btnProfiles != null) { btnProfiles.Content = MainWindow.L("✍️ Selezione Manuale ▾", "✍️ Selezione Manuale ▾"); btnProfiles.Foreground = brushAmber; } UpdateFooterSummary(); UpdateFilterTabsVisuals(); };
+                chk.Checked += (s, e) => { task.Selected = true; card.Background = brushCardSelected; card.BorderBrush = brushBorderSelected; if (btnProfiles != null) { btnProfiles.Content = "✍️ Selezione Manuale ▾"; btnProfiles.Foreground = brushAmber; } UpdateFooterSummary(); UpdateFilterTabsVisuals(); };
+                chk.Unchecked += (s, e) => { task.Selected = false; card.Background = brushCard; card.BorderBrush = brushBorder; if (btnProfiles != null) { btnProfiles.Content = "✍️ Selezione Manuale ▾"; btnProfiles.Foreground = brushAmber; } UpdateFooterSummary(); UpdateFilterTabsVisuals(); };
 
                 Grid.SetColumn(chk, 0);
                 grd.Children.Add(chk);
@@ -2101,7 +2079,7 @@ namespace UniversalOptimizer
                         Padding = new Thickness(8, 3, 8, 3),
                         VerticalAlignment = VerticalAlignment.Center
                     };
-                    bdrRec.Child = new TextBlock() { Text = MainWindow.L("CONSIGLIATO", "CONSIGLIATO"), FontSize = 10, FontWeight = FontWeights.Bold, Foreground = brushEmerald };
+                    bdrRec.Child = new TextBlock() { Text = "CONSIGLIATO", FontSize = 10, FontWeight = FontWeights.Bold, Foreground = brushEmerald };
                     Grid.SetColumn(bdrRec, 2);
                     grd.Children.Add(bdrRec);
                 }
@@ -2129,7 +2107,7 @@ namespace UniversalOptimizer
 
             if (count == 0)
             {
-                txtSummaryDesc.Text = MainWindow.L("Nessuna operazione selezionata. Seleziona almeno un controllo.", "Nessuna operazione selezionata. Seleziona almeno un controllo.");
+                txtSummaryDesc.Text = "Nessuna operazione selezionata. Seleziona almeno un controllo.";
                 btnRun.IsEnabled = false;
                 btnRun.Background = new SolidColorBrush(Color.FromRgb(26, 36, 54));
                 btnRun.Foreground = new SolidColorBrush(Color.FromRgb(100, 116, 139));
@@ -2171,10 +2149,10 @@ namespace UniversalOptimizer
             modalStepList.Children.Clear();
             modalProgressBar.Value = 0;
             txtModalPercent.Text = "0%";
-            txtModalTitle.Text = MainWindow.L("⚡ Applicazione Manutenzioni in corso...", "⚡ Applicazione Manutenzioni in corso...");
-            txtModalCommandLog.Text = MainWindow.L("Inizializzazione manutenzione...", "Inizializzazione manutenzione...");
+            txtModalTitle.Text = "⚡ Applicazione Manutenzioni in corso...";
+            txtModalCommandLog.Text = "Inizializzazione manutenzione...";
             btnModalDone.IsEnabled = false;
-            btnModalDone.Content = MainWindow.L("🔒 In esecuzione... (non chiudere)", "🔒 In esecuzione... (non chiudere)");
+            btnModalDone.Content = "🔒 In esecuzione... (non chiudere)";
             btnModalDone.Background = new SolidColorBrush(Color.FromRgb(30, 41, 59));
             btnModalDone.Foreground = brushTextMuted;
 
@@ -2182,11 +2160,11 @@ namespace UniversalOptimizer
             modalWarningBanner.BorderBrush = new SolidColorBrush(Color.FromRgb(239, 68, 68));
             if (hasLongRunningTask)
             {
-                txtModalWarningText.Text = MainWindow.L("🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di sistema sono attivi. NOTA: Alcuni task selezionati (come SFC/DISM o WinSxS) potrebbero richiedere da diversi minuti fino a qualche ora a seconda dello stato del sistema. L'app non è bloccata.", "🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di system sono attivi. NOTA: Alcuni task selezionati (come SFC/DISM o WinSxS) potrebbero richiedere da diversi minuti fino a qualche ora a seconda dello stato del system. L'app non è bloccata.");
+                txtModalWarningText.Text = "🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di sistema sono attivi. NOTA: Alcuni task selezionati (come SFC/DISM o WinSxS) potrebbero richiedere da diversi minuti fino a qualche ora a seconda dello stato del sistema. L'app non è bloccata.";
             }
             else
             {
-                txtModalWarningText.Text = MainWindow.L("🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di sistema sono attivi. Non chiudere l'app né spegnere il PC fino al termine.", "🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di system sono attivi. Non chiudere l'app né spegnere il PC fino al termine.");
+                txtModalWarningText.Text = "🔒 MANUTENZIONE IN CORSO — NON CHIUDERE QUESTA FINESTRA\nI processi di sistema sono attivi. Non chiudere l'app né spegnere il PC fino al termine.";
             }
 
             // Populate items
@@ -2203,7 +2181,7 @@ namespace UniversalOptimizer
                 };
                 Grid grd = new Grid();
                 TextBlock txtN = new TextBlock() { Text = task.Name, FontSize = 12, Foreground = brushTextWhite, VerticalAlignment = VerticalAlignment.Center };
-                TextBlock txtS = new TextBlock() { Text = MainWindow.L("In attesa...", "In attesa..."), FontSize = 11, Foreground = brushTextSlate, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
+                TextBlock txtS = new TextBlock() { Text = "In attesa...", FontSize = 11, Foreground = brushTextSlate, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
                 grd.Children.Add(txtN);
                 grd.Children.Add(txtS);
                 row.Child = grd;
@@ -2236,10 +2214,10 @@ namespace UniversalOptimizer
                     this.Dispatcher.Invoke(() => {
                         modalProgressBar.Value = basePct;
                         txtModalPercent.Text = ((int)basePct) + "%";
-                        txtModalCommandLog.Text = MainWindow.L("Esecuzione in corso: ", "Esecuzione in corso: ") + task.Description;
+                        txtModalCommandLog.Text = "Esecuzione in corso: " + task.Description;
                         if (stepStatusMap.ContainsKey(task.Id))
                         {
-                            stepStatusMap[task.Id].Text = MainWindow.L("⚙ In corso (0s)...", "⚙ In corso (0s)...");
+                            stepStatusMap[task.Id].Text = "⚙ In corso (0s)...";
                             stepStatusMap[task.Id].Foreground = brushCyan;
                         }
                     });
@@ -2287,7 +2265,7 @@ namespace UniversalOptimizer
                             txtModalPercent.Text = ((int)newPct) + "%";
                             if (stepStatusMap.ContainsKey(task.Id))
                             {
-                                stepStatusMap[task.Id].Text = MainWindow.L("✓ Completato (", "✓ Completato (") + elapsedStr + ")";
+                                stepStatusMap[task.Id].Text = "✓ Completato (" + elapsedStr + ")";
                                 stepStatusMap[task.Id].Foreground = brushEmerald;
                             }
                         });
@@ -2304,7 +2282,7 @@ namespace UniversalOptimizer
                         this.Dispatcher.Invoke(() => {
                             if (stepStatusMap.ContainsKey(task.Id))
                             {
-                                stepStatusMap[task.Id].Text = MainWindow.L("⚠ Errore", "⚠ Errore");
+                                stepStatusMap[task.Id].Text = "⚠ Errore";
                                 stepStatusMap[task.Id].Foreground = brushAmber;
                             }
                         });
@@ -2322,7 +2300,7 @@ namespace UniversalOptimizer
                 InitTasks();
                 ScanHardwareBackground((pct, msg) => {
                     this.Dispatcher.Invoke(() => {
-                        txtModalCommandLog.Text = MainWindow.L("Aggiornamento diagnostica: ", "Updatemento diagnostica: ") + msg;
+                        txtModalCommandLog.Text = "Aggiornamento diagnostica: " + msg;
                     });
                 });
 
@@ -2355,16 +2333,16 @@ namespace UniversalOptimizer
                 this.Dispatcher.Invoke(() => {
                     isExecuting = false;
                     modalProgressBar.Value = 100;
-                    txtModalPercent.Text = MainWindow.L("100%", "100%");
-                    txtModalTitle.Text = MainWindow.L("✓ Manutenzione Completata con Successo!", "✓ Manutenzione Completata con Successo!");
-                    txtModalCommandLog.Text = MainWindow.L("✓ Tutte le operazioni selezionate sono state completate con successo.", "✓ Tutte le operazioni selezionate sono state completate con successo.");
+                    txtModalPercent.Text = "100%";
+                    txtModalTitle.Text = "✓ Manutenzione Completata con Successo!";
+                    txtModalCommandLog.Text = "✓ Tutte le operazioni selezionate sono state completate con successo.";
 
                     modalWarningBanner.Background = new SolidColorBrush(Color.FromArgb(30, 16, 185, 129));
                     modalWarningBanner.BorderBrush = brushEmerald;
-                    txtModalWarningText.Text = MainWindow.L("✅ MANUTENZIONE COMPLETATA CON SUCCESSO\nTutti i processi di sistema sono terminati. Ora puoi chiudere la finestra in sicurezza.", "✅ MANUTENZIONE COMPLETATA CON SUCCESSO\nTutti i processi di system sono terminati. Ora puoi chiudere la finestra in sicurezza.");
+                    txtModalWarningText.Text = "✅ MANUTENZIONE COMPLETATA CON SUCCESSO\nTutti i processi di sistema sono terminati. Ora puoi chiudere la finestra in sicurezza.";
 
                     btnModalDone.IsEnabled = true;
-                    btnModalDone.Content = MainWindow.L("Chiudi", "Chiudi");
+                    btnModalDone.Content = "Chiudi";
                     btnModalDone.Background = new LinearGradientBrush(Color.FromRgb(56, 189, 248), Color.FromRgb(2, 132, 199), new Point(0, 0), new Point(1, 1));
                     btnModalDone.Foreground = new SolidColorBrush(Color.FromRgb(5, 10, 20));
 
@@ -2734,7 +2712,7 @@ namespace UniversalOptimizer
                     this.Dispatcher.Invoke(() => {
                         if (stepStatusMap.ContainsKey(taskId))
                         {
-                            stepStatusMap[taskId].Text = MainWindow.L("⚙ In corso (", "⚙ In corso (") + elapsedSecStr + ")...";
+                            stepStatusMap[taskId].Text = "⚙ In corso (" + elapsedSecStr + ")...";
                             stepStatusMap[taskId].Foreground = brushCyan;
                         }
                     });
@@ -2811,7 +2789,7 @@ namespace UniversalOptimizer
 
         public DriverUpdateWindow()
         {
-            Title = MainWindow.L("Aggiornamenti Driver Online", "Updatementi Driver Online");
+            Title = "Aggiornamenti Driver Online";
             Width = 550;
             Height = 400;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -2836,7 +2814,7 @@ namespace UniversalOptimizer
             // Title
             TextBlock txtTitle = new TextBlock
             {
-                Text = MainWindow.L("Ricerca Driver Disponibili", "Ricerca Driver Disponibili"),
+                Text = "Ricerca Driver Disponibili",
                 FontSize = 18,
                 FontWeight = FontWeights.Bold,
                 Margin = new Thickness(0, 0, 0, 15),
@@ -2902,7 +2880,7 @@ namespace UniversalOptimizer
 
             txtStatus = new TextBlock
             {
-                Text = MainWindow.L("Inizializzazione...", "Inizializzazione..."),
+                Text = "Inizializzazione...",
                 Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#94A3B8")),
                 VerticalAlignment = VerticalAlignment.Center
             };
@@ -2938,7 +2916,7 @@ namespace UniversalOptimizer
             
             TextBlock loadText = new TextBlock
             {
-                Text = MainWindow.L("Ricerca driver online in corso...", "Ricerca driver online in corso..."),
+                Text = "Ricerca driver online in corso...",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, 0, 0, 15),
                 FontSize = 14,
@@ -3056,8 +3034,8 @@ namespace UniversalOptimizer
                         }
                         else
                         {
-                            txtStatus.Text = MainWindow.L("Tutti i driver sono aggiornati.", "Tutti i driver sono aggiornati.");
-                            MessageBox.Show(MainWindow.L("Tutti i driver del sistema risultano aggiornati!", "Tutti i driver del system risultano aggiornati!"), MainWindow.L("Nessun Aggiornamento", "Nessun Updatemento"), MessageBoxButton.OK, MessageBoxImage.Information);
+                            txtStatus.Text = "Tutti i driver sono aggiornati.";
+                            MessageBox.Show("Tutti i driver del sistema risultano aggiornati!", "Nessun Aggiornamento", MessageBoxButton.OK, MessageBoxImage.Information);
                             Close();
                         }
                     });
@@ -3067,7 +3045,7 @@ namespace UniversalOptimizer
                     Dispatcher.Invoke(() =>
                     {
                         loadingOverlay.Visibility = Visibility.Collapsed;
-                        txtStatus.Text = MainWindow.L("Errore di ricerca.", "Errore di ricerca.");
+                        txtStatus.Text = "Errore di ricerca.";
                         MessageBox.Show("Impossibile completare la ricerca driver: " + ex.Message, "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
                         Close();
                     });
@@ -3080,7 +3058,7 @@ namespace UniversalOptimizer
             var selectedToUpdate = uiItems.FindAll(x => x.IsSelected);
             if (selectedToUpdate.Count == 0)
             {
-                MessageBox.Show(MainWindow.L("Seleziona almeno un driver da installare.", "Seleziona almeno un driver da installare."), MainWindow.L("Selezione Vuota", "Selezione Vuota"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Seleziona almeno un driver da installare.", "Selezione Vuota", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -3101,7 +3079,7 @@ namespace UniversalOptimizer
                     // Download Phase
                     Dispatcher.Invoke(() =>
                     {
-                        txtLoadingStatus.Text = MainWindow.L("Download dei driver in corso...", "Download dei driver in corso...");
+                        txtLoadingStatus.Text = "Download dei driver in corso...";
                     });
 
                     dynamic downloader = session.CreateUpdateDownloader();
@@ -3111,7 +3089,7 @@ namespace UniversalOptimizer
                     // Install Phase
                     Dispatcher.Invoke(() =>
                     {
-                        txtLoadingStatus.Text = MainWindow.L("Installazione dei driver in corso...", "Installazione dei driver in corso...");
+                        txtLoadingStatus.Text = "Installazione dei driver in corso...";
                     });
 
                     dynamic installer = session.CreateUpdateInstaller();
@@ -3121,7 +3099,7 @@ namespace UniversalOptimizer
                     Dispatcher.Invoke(() =>
                     {
                         loadingOverlay.Visibility = Visibility.Collapsed;
-                        MessageBox.Show(MainWindow.L("Installazione completata con successo!\n\nNota: Potrebbe essere richiesto di riavviare il sistema per completare l'applicazione dei nuovi driver.", "Installazione completata con successo!\n\nNota: Potrebbe essere richiesto di riavviare il system per completare l'applicazione dei nuovi driver."), MainWindow.L("Aggiornamento Completato", "Updatemento Completato"), MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Installazione completata con successo!\n\nNota: Potrebbe essere richiesto di riavviare il sistema per completare l'applicazione dei nuovi driver.", "Aggiornamento Completato", MessageBoxButton.OK, MessageBoxImage.Information);
                         Close();
                     });
                 }
@@ -3161,7 +3139,7 @@ namespace UniversalOptimizer
 
         public WingetUpdateWindow()
         {
-            Title = MainWindow.L("Aggiornamento Applicazioni con WinGet", "Updatemento Applicazioni con WinGet");
+            Title = "Aggiornamento Applicazioni con WinGet";
             Width = 600;
             Height = 450;
             WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -3186,7 +3164,7 @@ namespace UniversalOptimizer
             // Title
             TextBlock txtTitle = new TextBlock
             {
-                Text = MainWindow.L("Applicazioni Aggiornabili (WinGet)", "Applicazioni Updatebili (WinGet)"),
+                Text = "Applicazioni Aggiornabili (WinGet)",
                 FontSize = 18,
                 FontWeight = FontWeights.Bold,
                 Margin = new Thickness(0, 0, 0, 15),
@@ -3251,7 +3229,7 @@ namespace UniversalOptimizer
 
             txtStatus = new TextBlock
             {
-                Text = MainWindow.L("Scansione applicazioni in corso...", "Scansione applicazioni in corso..."),
+                Text = "Scansione applicazioni in corso...",
                 Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#94A3B8")),
                 VerticalAlignment = VerticalAlignment.Center
             };
@@ -3287,7 +3265,7 @@ namespace UniversalOptimizer
             
             txtLoadingStatus = new TextBlock
             {
-                Text = MainWindow.L("Scansione degli aggiornamenti disponibili con WinGet...", "Scansione degli aggiornamenti disponibili con WinGet..."),
+                Text = "Scansione degli aggiornamenti disponibili con WinGet...",
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Margin = new Thickness(0, 0, 0, 15),
                 FontSize = 14,
@@ -3447,8 +3425,8 @@ namespace UniversalOptimizer
                         }
                         else
                         {
-                            txtStatus.Text = MainWindow.L("Tutte le app sono aggiornate.", "Tutte le app sono aggiornate.");
-                            MessageBox.Show(MainWindow.L("Tutte le applicazioni di terze parti risultano aggiornate!", "Tutte le applicazioni di terze parti risultano aggiornate!"), MainWindow.L("Nessun Aggiornamento", "Nessun Updatemento"), MessageBoxButton.OK, MessageBoxImage.Information);
+                            txtStatus.Text = "Tutte le app sono aggiornate.";
+                            MessageBox.Show("Tutte le applicazioni di terze parti risultano aggiornate!", "Nessun Aggiornamento", MessageBoxButton.OK, MessageBoxImage.Information);
                             Close();
                         }
                     });
@@ -3458,7 +3436,7 @@ namespace UniversalOptimizer
                     Dispatcher.Invoke(() =>
                     {
                         loadingOverlay.Visibility = Visibility.Collapsed;
-                        txtStatus.Text = MainWindow.L("Errore durante la scansione.", "Errore durante la scansione.");
+                        txtStatus.Text = "Errore durante la scansione.";
                         MessageBox.Show("Errore durante il controllo degli aggiornamenti con winget: " + ex.Message, "Errore", MessageBoxButton.OK, MessageBoxImage.Error);
                         Close();
                     });
@@ -3471,7 +3449,7 @@ namespace UniversalOptimizer
             var selectedToUpdate = uiItems.FindAll(x => x.IsSelected);
             if (selectedToUpdate.Count == 0)
             {
-                MessageBox.Show(MainWindow.L("Seleziona almeno un'applicazione da aggiornare.", "Seleziona almeno un'applicazione da aggiornare."), MainWindow.L("Selezione Vuota", "Selezione Vuota"), MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Seleziona almeno un'applicazione da aggiornare.", "Selezione Vuota", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -3514,7 +3492,7 @@ namespace UniversalOptimizer
                     {
                         prgBar.Value = 100;
                         loadingOverlay.Visibility = Visibility.Collapsed;
-                        MessageBox.Show(MainWindow.L("Tutti gli aggiornamenti software selezionati sono stati applicati con successo!", "Tutti gli aggiornamenti software selezionati sono stati applicati con successo!"), MainWindow.L("Manutenzione Completata", "Manutenzione Completata"), MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show("Tutti gli aggiornamenti software selezionati sono stati applicati con successo!", "Manutenzione Completata", MessageBoxButton.OK, MessageBoxImage.Information);
                         Close();
                     });
                 }
@@ -3558,9 +3536,7 @@ namespace UniversalOptimizer
         public ReportWindow(string summaryText, List<TaskReportItem> items, string rawReport)
         {
             this.reportText = rawReport;
-            
-// removed
-            this.Title = MainWindow.L("Rapporto Finale Manutenzione & Ottimizzazione", "Rapporto Finale Manutenzione & Ottimizzazione");
+            this.Title = "Rapporto Finale Manutenzione & Ottimizzazione";
             this.Width = 650;
             this.Height = 500;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -3578,7 +3554,7 @@ namespace UniversalOptimizer
 
             // Header
             StackPanel spHeader = new StackPanel { Margin = new Thickness(0, 0, 0, 15) };
-            TextBlock txtTitle = new TextBlock { Text = MainWindow.L("📊 RAPPORTO DI MANUTENZIONE COMPLETATO", "📊 RAPPORTO DI MANUTENZIONE COMPLETATO"), FontSize = 16, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(56, 189, 248)) };
+            TextBlock txtTitle = new TextBlock { Text = "📊 RAPPORTO DI MANUTENZIONE COMPLETATO", FontSize = 16, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(56, 189, 248)) };
             TextBlock txtSummary = new TextBlock { Text = summaryText, FontSize = 12.5, Foreground = new SolidColorBrush(Color.FromRgb(241, 245, 249)), Margin = new Thickness(0, 6, 0, 0), TextWrapping = TextWrapping.Wrap };
             spHeader.Children.Add(txtTitle);
             spHeader.Children.Add(txtSummary);
@@ -3675,7 +3651,7 @@ namespace UniversalOptimizer
             {
                 Filter = "File di testo (*.txt)|*.txt",
                 FileName = "RapportoManutenzione_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".txt",
-                Title = MainWindow.L("Salva Rapporto Manutenzione", "Salva Rapporto Manutenzione")
+                Title = "Salva Rapporto Manutenzione"
             };
 
             if (sfd.ShowDialog() == true)
@@ -3704,9 +3680,7 @@ namespace UniversalOptimizer
     {
         public DiskDetailsWindow()
         {
-            
-// removed
-            this.Title = MainWindow.L("Analisi e Stato di Salute Unità di Archiviazione", "Analyzing e Stato di Salute Unità di Archiviazione");
+            this.Title = "Analisi e Stato di Salute Unità di Archiviazione";
             this.Width = 740;
             this.Height = 520;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -3725,8 +3699,8 @@ namespace UniversalOptimizer
 
             // Header
             StackPanel spHeader = new StackPanel { Margin = new Thickness(0, 0, 0, 15) };
-            TextBlock txtTitle = new TextBlock { Text = MainWindow.L("💾 RILEVAZIONE E COMPATIBILITÀ UNITÀ ARCHIVIAZIONE", "💾 RILEVAZIONE E COMPATIBILITÀ UNITÀ ARCHIVIAZIONE"), FontSize = 16, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(192, 132, 252)) };
-            TextBlock txtSub = new TextBlock { Text = MainWindow.L("Analisi dei file system, stato dei blocchi in scrittura e compatibilità con i tool di manutenzione.", "Analyzing dei files system, stato dei blocchi in scrittura e compatibilità con i tool di manutenzione."), FontSize = 12, Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)), Margin = new Thickness(0, 4, 0, 0) };
+            TextBlock txtTitle = new TextBlock { Text = "💾 RILEVAZIONE E COMPATIBILITÀ UNITÀ ARCHIVIAZIONE", FontSize = 16, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(192, 132, 252)) };
+            TextBlock txtSub = new TextBlock { Text = "Analisi dei file system, stato dei blocchi in scrittura e compatibilità con i tool di manutenzione.", FontSize = 12, Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)), Margin = new Thickness(0, 4, 0, 0) };
             spHeader.Children.Add(txtTitle);
             spHeader.Children.Add(txtSub);
             Grid.SetRow(spHeader, 0);
@@ -3744,7 +3718,7 @@ namespace UniversalOptimizer
             };
 
             StackPanel spSmart = new StackPanel();
-            TextBlock lblSmartTitle = new TextBlock { Text = MainWindow.L("🔍 STATO DI SALUTE HARDWARE (S.M.A.R.T. ATTIVO)", "🔍 STATO DI SALUTE HARDWARE (S.M.A.R.T. ATTIVO)"), FontSize = 11, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(168, 85, 247)), Margin = new Thickness(0, 0, 0, 6) };
+            TextBlock lblSmartTitle = new TextBlock { Text = "🔍 STATO DI SALUTE HARDWARE (S.M.A.R.T. ATTIVO)", FontSize = 11, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(168, 85, 247)), Margin = new Thickness(0, 0, 0, 6) };
             spSmart.Children.Add(lblSmartTitle);
 
             TextBlock txtSmartList = new TextBlock
@@ -3847,7 +3821,7 @@ namespace UniversalOptimizer
             // Close button
             Button btnClose = new Button
             {
-                Content = MainWindow.L("Chiudi", "Chiudi"),
+                Content = "Chiudi",
                 Height = 36,
                 Width = 100,
                 HorizontalAlignment = HorizontalAlignment.Right,
@@ -3958,9 +3932,7 @@ namespace UniversalOptimizer
     {
         public DisclaimerWindow()
         {
-            
-// removed
-            this.Title = MainWindow.L("Note Legali, Sicurezza e Supporto", "Note Legali, Sicurezza e Supporto");
+            this.Title = "Note Legali, Sicurezza e Supporto";
             this.Width = 650;
             this.Height = 560;
             this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -3978,8 +3950,8 @@ namespace UniversalOptimizer
 
             // Header
             StackPanel spHeader = new StackPanel { Margin = new Thickness(0, 0, 0, 15) };
-            TextBlock txtTitle = new TextBlock { Text = MainWindow.L("ℹ️ INFORMAZIONI LEGALI, SICUREZZA & SUPPORTO", "ℹ️ INFORMAZIONI LEGALI, SICUREZZA & SUPPORTO"), FontSize = 15, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(56, 189, 248)) };
-            TextBlock txtSub = new TextBlock { Text = MainWindow.L("Termini di licenza d'uso, esclusione di responsabilità e supporto allo sviluppo.", "Termini di licenza d'uso, esclusione di responsabilità e supporto allo sviluppo."), FontSize = 11.5, Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)), Margin = new Thickness(0, 4, 0, 0) };
+            TextBlock txtTitle = new TextBlock { Text = "ℹ️ INFORMAZIONI LEGALI, SICUREZZA & SUPPORTO", FontSize = 15, FontWeight = FontWeights.Bold, Foreground = new SolidColorBrush(Color.FromRgb(56, 189, 248)) };
+            TextBlock txtSub = new TextBlock { Text = "Termini di licenza d'uso, esclusione di responsabilità e supporto allo sviluppo.", FontSize = 11.5, Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)), Margin = new Thickness(0, 4, 0, 0) };
             spHeader.Children.Add(txtTitle);
             spHeader.Children.Add(txtSub);
             Grid.SetRow(spHeader, 0);
@@ -4021,7 +3993,7 @@ namespace UniversalOptimizer
 
             Button btnDonate = new Button
             {
-                Content = MainWindow.L("☕ Fai un'offerta libera su Ko-fi (ko-fi.com/kabuby)", "☕ Fai un'offerta libera su Ko-fi (ko-fi.com/kabuby)"),
+                Content = "☕ Fai un'offerta libera su Ko-fi (ko-fi.com/kabuby)",
                 Height = 34,
                 FontWeight = FontWeights.Bold,
                 FontSize = 11.5,
@@ -4050,7 +4022,7 @@ namespace UniversalOptimizer
             // Close button
             Button btnClose = new Button
             {
-                Content = MainWindow.L("Ho Capito / Chiudi", "Ho Capito / Chiudi"),
+                Content = "Ho Capito / Chiudi",
                 Height = 36,
                 Width = 160,
                 FontWeight = FontWeights.Bold,
